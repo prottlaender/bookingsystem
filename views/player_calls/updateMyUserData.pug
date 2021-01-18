@@ -1,0 +1,101 @@
+doctype html
+head
+  title= `${title}`
+  // Import Google Icon Font
+  link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet')
+  // Import materialize.css
+  link(type='text/css', rel='stylesheet', href='../css/materialize.min.css', media='screen,projection')
+  // Import index.css
+  link(type='text/css', rel='stylesheet', href='../css/index.css')
+  // Let browser know website is optimized for mobile
+  meta(name='viewport', content='width=device-width, initial-scale=1.0, viewport-fit=cover')
+  // Let browser know website use utf-8 coding
+  meta(http-equiv='content-type', content='text/html; charset=utf-8')
+header.header
+  nav.nav
+    .nav-wrapper
+      a.brand-logo#navtext Welcome #{name} #{lastname}
+      a.sidenav-trigger(href='#', data-target='mobile-sidenav')
+        i.material-icons menu
+      ul.right.hide-on-med-and-down
+        li
+          a(href='/dashboard') Dashboard
+  ul#mobile-sidenav.sidenav
+    li
+      a.sidenav-close(href='#')
+        i.material-icons close
+    li
+      a(href='/dashboard') Dashboard
+main.main
+  .row
+    .col.s10.push-s1.m8.push-m2.l6.push-l3
+      .card
+        #gradient.card-content
+          h6#h6 Update My Data
+        .card-content
+          .row
+            form#updateMyDataForm.col.s12(method='post', action='/updatemyuserdata')
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='email', value= data_user_email, readonly)
+                  label(for='email') User Email
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='balance', value= data_user_balance, readonly)
+                  label(for='balance') Balance
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='status', value= data_user_status, readonly)
+                  label(for='status') Status
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='age', value= calc_age, readonly)
+                  label(for='age') Age
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='cat', value= calc_cat, readonly)
+                  label(for='cat') Category
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='updateRole', value= data_user_role, readonly)
+                  label(for='updateRole') Role
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='updateBirthdate', value= data_user_birthdate, readonly)
+                  label(for='updateBirthdate') New Birthdate
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='updateName', value= data_user_name, readonly)
+                  label(for='updateName') New Name
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='updateLastname', value= data_user_lastname, readonly)
+                  label(for='updateLastname') New Lastname
+              .row
+                .input-field.col.s8
+                  input.validate(type='text', name='updateStreet', value= data_user_street)
+                  label(for='updateStreet') New Street
+              .row
+                .input-field.col.s8
+                  input.validate(type='text', name='updatePlz', value= data_user_plz)
+                  label(for='updatePlz') New Postal Code
+              .row
+                .input-field.col.s8
+                  input.validate(type='text', name='updateCity', value= data_user_city)
+                  label(for='updateCity') New City
+        .card-action.right-align
+          a.btn.waves-effect.waves-light.grey.darken-1(href='/dashboard')
+            | Back
+            i.material-icons.right undo
+          button.btn.waves-effect.waves-light(type='submit', form='updateMyDataForm')
+            | Confirm
+            i.material-icons.right check_circle
+// class="page-footer"
+footer.footer
+  nav.nav
+    div#footerdiv
+      p#footertext VFR Angelohe Training Booking Tool
+
+// JavaScript at end of body for optimized loading
+script(type='text/javascript', src='../js/materialize.min.js')
+script(type='text/javascript', src='../js/auth_player_calls.js')

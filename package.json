@@ -1,0 +1,21 @@
+{
+  "name": "bookingsystem",
+  "description": "Users can book ice hockey trainings and get billed.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prottlaender/bookingsystem.git"
+  },
+  "version": "1.0.0",
+  "main": "booking.js",
+  "author": "Patrick Rottlaender",
+  "dependencies": {
+    "bcryptjs": "2.4.3",
+    "connect-mongodb-session": "2.3.3",
+    "envy": "2.0.0",
+    "express": "4.17.1",
+    "express-session": "1.17.1",
+    "helmet": "3.23.3",
+    "mongoose": "5.9.23",
+    "pug": "3.0.0"
+  }
+}

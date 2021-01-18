@@ -1,0 +1,277 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #d1d1e0;
+
+}
+
+.header { grid-area: header; width: 98%; background-color: #ffffff; border-radius: 5px;}
+.main { grid-area: main; width: 98%; background-color: #ffffff; border-radius: 5px;}
+.footer { grid-area: footer; width: 98%; background-color: #ffffff; border-radius: 5px;}
+
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+      "header"
+      "main"
+      "footer";
+  grid-gap: 5px;
+  background-color: #d1d1e0;
+  margin-left: 2%;
+}
+
+/* style the navigation links with float on the left (side by side) */
+.header a.link {
+  float: left;
+  display: block;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 1.4vw;
+  color: #28283e;
+}
+
+/* hover effect for each navigation link */
+.header a.link:hover {
+  background-color: #0489B1;
+  color: #ffffff;
+}
+
+/* style the burgericon link on the right */
+.header a.burgericon {
+  float: right;
+  display: none;
+  padding: 14px 16px;
+}
+
+/* style each burgerline that create the burgericon */
+.burgerline {
+  width: 35px;
+  height: 5px;
+  background-color: #28283e;
+  margin: 6px 0;
+  transition: 0.4s;
+}
+
+/* style burgerlines after on onclick event */
+/* the .change class will be added onclick with classList.toggle in the JavaScript */
+/* rotate first bar */
+.change #bar1 {
+  /* rotate -45 degrees (counterclockwise) move 15px down in Y-direction */
+  transform: rotate(-45deg) translateY(15px);
+}
+/* fade out the second bar */
+.change #bar2 {
+  opacity: 0;
+}
+/* rotate third bar */
+.change #bar3 {
+  /* rotate +45 degrees (clockwise) move 15px up in Y-direction */
+  transform: rotate(45deg) translateY(-15px);
+}
+
+/* for screens up to 600px remove the navigation links and show the burgericon instead */
+@media screen and (max-width: 600px) {
+  .header a.link { display: none; }
+  .header a.burgericon { display: block; }
+}
+
+/* for screens up to 600px and after onclick event the responsive class will be added to the header */
+@media screen and (max-width: 600px) {
+  /* show navigation links left with no float (links shown among themselves) */
+  .header.responsive a.link {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+}
+
+h1 {
+  font-size: 3vw;
+  margin-left: 14px;
+}
+
+h2 {
+  font-size: 2vw;
+  margin-left: 4px;
+}
+
+p {
+  font-size: 1.4vw;
+  margin-left: 14px;
+}
+
+label {
+  font-size: 1.1vw;
+}
+
+.footertext {
+  font-size: 1.4vw;
+  padding-left: 14px;
+  text-align: center;
+}
+
+.mainFormContainer {
+  width: 50%;
+  margin: 10px auto;
+  border-radius: 5px;
+  background-color: #d1d1e0;
+  padding: 20px;
+}
+
+.modalForm {
+  width: 60%;
+  margin: 10px auto;
+}
+
+.mainForm {
+  width: 80%;
+  margin: 10px auto;
+}
+
+.input {
+  width: 100%;
+  /*padding top/bottom 12px padding right/left 20px*/
+  padding: 12px 20px;
+  margin: 3px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1.1vw;
+}
+
+.adminButtonsContainer {
+  width: 90%;
+  height: 50px;
+  margin: 10px auto;
+  border-radius: 5px;
+  background-color: #d1d1e0;
+  padding: 20px;
+}
+
+.adminConsoleContainer {
+  display: none;
+}
+
+.adminConsole {
+  width: 90%;
+  margin: 10px auto;
+  border-radius: 5px;
+  background-color: #d1d1e0;
+  padding: 20px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content { display: block; }
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover { background-color: #0489B1; color: #ffffff;}
+
+.table {
+  width: 100%;
+  overflow-x:auto;
+}
+
+td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #f2f2f2;
+  font-size: 1.0vw;
+  background-color: ;
+  color: black;
+}
+
+th {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #f2f2f2;
+  font-size: 1.0vw;
+  background-color: #4CAF50;
+  color: white;
+}
+
+.greenButton {
+  background-color: #4CAF50; /* Green */
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border: none;
+  color: white;
+  padding: 15px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1.4vw;
+  border-radius: 5px;
+}
+
+.greenButtonactive {
+  background-color: #0489B1; /* blue */
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border: none;
+  color: white;
+  padding: 15px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1.4vw;
+  border-radius: 5px;
+}
+
+.greenButton:hover { background-color: #3e8e41; }
+
+.redButton {
+  background-color: red;
+  float: right;
+  margin-top: 10px;
+  margin-right: 10px;
+  border: none;
+  color: white;
+  padding: 15px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1.4vw;
+  border-radius: 5px;
+}
+
+.redButton:hover { background-color: #B80303; }
+
+.modal {
+  display: none;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255,255,255);
+}
+
+input:read-only {
+  background: gainsboro;
+}
+input[value]:read-only {
+  color: whitesmoke;
+}

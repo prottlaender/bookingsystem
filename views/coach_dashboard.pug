@@ -1,0 +1,100 @@
+doctype html
+head
+  title= `${title}`
+  // Import Google Icon Font
+  link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet')
+  // Import materialize.css
+  link(type='text/css', rel='stylesheet', href='css/materialize.min.css', media='screen,projection')
+  // Import index.css
+  link(type='text/css', rel='stylesheet', href='css/index.css')
+  // Let browser know website is optimized for mobile
+  meta(name='viewport', content='width=device-width, initial-scale=1.0, viewport-fit=cover')
+  // Let browser know website use utf-8 coding
+  meta(http-equiv='content-type', content='text/html; charset=utf-8')
+header.header
+  // Main Navigation
+  nav.nav
+    .nav-wrapper
+      a.brand-logo#navtext Welcome #{name} #{lastname}
+      a.sidenav-trigger(href='#', data-target='mobile-sidenav')
+        i.material-icons menu
+      ul.right.hide-on-med-and-down
+        li
+          a#openSelectTrainingModalBtn.modal-trigger(href='#select_training_modal') Select Training
+
+        // logout
+        li
+          a(href='/logout') Logout
+  // Mobile Navigation
+  ul#mobile-sidenav.sidenav
+    li
+      a#openSelectTrainingModalBtn.modal-trigger(href='#select_training_modal') Select Training
+
+    // logout
+    li
+      a(href='/logout') Logout
+main.main
+  .row
+    .card
+      #gradient.card-content
+        h6#h6 Coach Dashboard
+      table#coachTrainingsTable.highlight.responsive-table
+        thead
+          tr
+            th Check
+            th(style="display:none;") Training ID
+            th Date
+            th Location
+            th Type
+            th Time Start
+            th Time End
+            th Price Youth
+            th Price Adult
+
+        tbody
+
+        each training in data_trainings
+
+          tr
+            td
+              p
+                label
+                  input.checkboxes(type='checkbox')
+                  span
+            td(style="display:none;")= training._id
+            - var dd = (training.date.getDate() < 10 ? '0' : '') +training.date.getDate();
+            - var mm = ((training.date.getMonth()+1) < 10 ? '0' : '') +(training.date.getMonth()+1)
+            - var yyyy = training.date.getFullYear()
+            - var trainingDate = dd +'.' +mm +'.' +yyyy
+            td= trainingDate
+            td= training.location
+            td= training.type
+            td= training.timestart
+            td= training.timeend
+            td= training.priceyouth
+            td= training.priceadult
+
+// class="page-footer"
+footer.footer
+  nav.nav
+    div#footerdiv
+      p#footertext VFR Angelohe Training Booking Tool
+
+// Modal Structure Select Training
+#select_training_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Select Training
+    .row
+      form#selectTrainingForm.col.s12(method='post', action='/callparticipants')
+        .row
+          .input-field.col.s8
+            input#idinput.readonly(type='text', name='id', value='null', readonly)
+            label(for='id') Training ID
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button.btn.waves-effect.waves-light(type='submit', form='selectTrainingForm')
+      | Submit
+      i.material-icons.right send
+// JavaScript at end of body for optimized loading
+script(type='text/javascript', src='js/materialize.min.js')
+script(type='text/javascript', src='js/auth_coach.js')

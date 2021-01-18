@@ -1,0 +1,687 @@
+doctype html
+head
+  title= `${title}`
+  // Import Google Icon Font
+  link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet')
+  // Import materialize.css
+  link(type='text/css', rel='stylesheet', href='css/materialize.min.css', media='screen,projection')
+  // Import index.css
+  link(type='text/css', rel='stylesheet', href='css/index.css')
+  // Let browser know website is optimized for mobile
+  meta(name='viewport', content='width=device-width, initial-scale=1.0, viewport-fit=cover')
+  // Let browser know website use utf-8 coding
+  meta(http-equiv='content-type', content='text/html; charset=utf-8')
+
+header.header
+
+  // Dropdown Structures
+  // User Management Dropdown Structure
+  ul#dropdown_user.dropdown-content
+    li
+      a.modal-trigger(href='#create_user_modal') Create User
+    li
+      a#updateUserBtn.modal-trigger(href='#update_user_modal') Update User
+    li
+      a#updateUserEmailBtn.modal-trigger(href='#update_user_email_modal') Update Email
+    li
+      a#updateUserStatusBtn.modal-trigger(href='#update_user_status_modal') Update Status
+    li
+      a#updateUserPasswordBtn.modal-trigger(href='#update_user_password_modal') Update Password
+
+  // User Management Dropdown Structure Mobile
+  ul#dropdown_user_mobile.dropdown-content
+    li
+      a.modal-trigger(href='#create_user_modal') Create User
+    li
+      a#updateUserMobileBtn.modal-trigger(href='#update_user_modal') Update User
+    li
+      a#updateUserEmailMobileBtn.modal-trigger(href='#update_user_email_modal') Update Email
+    li
+      a#updateUserStatusMobileBtn.modal-trigger(href='#update_user_status_modal') Update Status
+    li
+      a#updateUserPasswordMobileBtn.modal-trigger(href='#update_user_password_modal') Update Password
+
+  // Location Management Dropdown Structure
+  ul#dropdown_location.dropdown-content
+    li
+      a.modal-trigger(href='#create_location_modal') Create Location
+    li
+      a#updateLocationBtn.modal-trigger(href='#update_location_modal') Update Location
+    li
+      a#createTrainingBtn.modal-trigger(href='#create_training_modal') Create Training
+
+  // Location Management Dropdown Structure Mobile
+  ul#dropdown_location_mobile.dropdown-content
+    li
+      a.modal-trigger(href='#create_location_modal') Create Location
+    li
+      a#updateLocationMobileBtn.modal-trigger(href='#update_location_modal') Update Location
+    li
+      a#createTrainingMobileBtn.modal-trigger(href='#create_training_modal') Create Training
+
+  // Invoice Management Dropdown Structure
+  ul#dropdown_invoicing.dropdown-content
+    li
+      a#createUserInvoiceBtn.modal-trigger(href='#user_invoicing_modal') Create Invoice for User
+    li
+      a#cancelUserInvoiceBtn.modal-trigger(href='#user_cancel_invoice_modal') Cancel Invoice
+    li
+      a#createUserInvoicePaymentBtn.modal-trigger(href='#user_payment_invoice_modal') Create Payment
+
+  // Invoice Management Dropdown Structure Mobile
+  ul#dropdown_invoicing_mobile.dropdown-content
+    li
+      a#createUserInvoiceMobileBtn.modal-trigger(href='#user_invoicing_modal') Create Invoice for User
+    li
+      a#cancelUserInvoiceMobileBtn.modal-trigger(href='#user_cancel_invoice_modal') Cancel Invoice
+    li
+      a#createUserInvoicePaymentMobileBtn.modal-trigger(href='#user_payment_invoice_modal') Create Payment
+
+  // Main Navigation
+  nav.nav
+    .nav-wrapper
+      a.brand-logo#navtext Welcome #{name} #{lastname}
+      a.sidenav-trigger(href='#', data-target='mobile-sidenav')
+        i.material-icons menu
+      ul.right.hide-on-med-and-down
+        // Dropdown Trigger
+        li
+          a.dropdown-trigger(href='#!', data-target='dropdown_user')
+            | User Management
+            i.material-icons.right arrow_drop_down
+        li
+          a#updateTrainingBtn.modal-trigger(href='#update_training_modal') Update Training
+        li
+          a.dropdown-trigger(href='#!', data-target='dropdown_location')
+            | Location Management
+            i.material-icons.right arrow_drop_down
+        li
+          a.dropdown-trigger(href='#!', data-target='dropdown_invoicing')
+            | Invoice Management
+            i.material-icons.right arrow_drop_down
+        // logout
+        li
+          a(href='/logout') Logout
+
+  // Mobile Navigation
+  ul#mobile-sidenav.sidenav
+    li
+      a.sidenav-close(href='#')
+        i.material-icons close
+
+    // Dropdown Trigger Mobile
+    li
+      a.dropdown-trigger-sidenav(href='#!', data-target='dropdown_user_mobile')
+        | User Management
+        i.material-icons.right arrow_drop_down
+    li
+      a#updateTrainingMobileBtn.modal-trigger(href='#update_training_modal') Update Training
+    li
+      a.dropdown-trigger-sidenav(href='#!', data-target='dropdown_location_mobile')
+        | Location Management
+        i.material-icons.right arrow_drop_down
+    li
+      a.dropdown-trigger-sidenav(href='#!', data-target='dropdown_invoicing_mobile')
+        | Invoice Management
+        i.material-icons.right arrow_drop_down
+
+    // logout
+    li
+      a(href='/logout') Logout
+
+main.main
+  .row
+    .card
+      #gradient.card-content
+        h6#h6 Admin Dashboard
+      .card-tabs
+        ul.tabs.tabs-fixed-width
+          li.tab
+            a.active(href='#users') Users
+          li.tab
+            a(href='#bookings') Bookings
+          li.tab
+            a(href='#trainings') Trainings
+          li.tab
+            a(href='#locations') Locations
+          li.tab
+            a(href='#invoices') Invoices
+
+      .card-content
+        #users
+          table#adminUsersTable.highlight.responsive-table
+            thead
+              tr
+                th Check
+                th Name
+                th Lastname
+                th Email
+                th Birthdate
+                th Role
+                th Age
+                th Category
+                th Status
+                th Balance
+            tbody
+
+            each user in data_users
+
+              tr
+                td
+                  p
+                    label
+                      input.checkboxes(type='checkbox')
+                      span
+                td= user.name
+                td= user.lastname
+                td= user.email
+                - var dd = (user.birthdate.getDate() < 10 ? '0' : '') +user.birthdate.getDate();
+                - var mm = ((user.birthdate.getMonth()+1) < 10 ? '0' : '') +(user.birthdate.getMonth()+1)
+                - var yyyy = user.birthdate.getFullYear()
+                - var birthDate = dd +'.' +mm +'.' +yyyy
+                td= birthDate
+                td= user.role
+                - var yearInMs = 3.15576e+10;
+                - var currentDate = new Date();
+                - var currentDateInMs = currentDate.getTime();
+                - var birthDateInMs = user.birthdate.getTime();
+                - var age = Math.floor((currentDateInMs - birthDateInMs) / yearInMs).toFixed(0);
+                td= age
+                - if (age < 18) {var cat = 'youth'} else {var cat = 'adult'};
+                td= cat
+                td= user._status
+                td= user._balance
+
+        #bookings
+          table.highlight.responsive-table
+            thead
+              tr
+                th Name
+                th Lastname
+                th Email
+                th Category
+                th Type
+                th Location
+                th Date
+                th Time Start
+                th Time End
+                th Price
+                th Status
+            tbody
+
+            each booking in data_bookings
+              tr
+                td= booking._bookusername
+                td= booking._bookuserlastname
+                td= booking._bookuseremail
+                td= booking._bookusercat
+                td= booking._booktrainingtype
+                td= booking._booktraininglocation
+                - var dd = (booking._booktrainingdate.getDate() < 10 ? '0' : '') +booking._booktrainingdate.getDate();
+                - var mm = ((booking._booktrainingdate.getMonth()+1) < 10 ? '0' : '') +(booking._booktrainingdate.getMonth()+1)
+                - var yyyy = booking._booktrainingdate.getFullYear()
+                - var bookingDate = dd +'.' +mm +'.' +yyyy
+                td= bookingDate
+                td= booking._booktrainingtimestart
+                td= booking._booktrainingtimeend
+                td= booking._booktrainingprice
+                td= booking._bookparticipation
+
+        #trainings
+          table#adminTrainingTable.highlight.responsive-table
+            thead
+              tr
+                th Check
+                th(style="display:none;") Training ID
+                th Type
+                th Location
+                th Date
+                th Time Start
+                th Time End
+                th Price Youth
+                th Price Adult
+                th Status
+            tbody
+
+            each training in data_trainings
+              tr
+                td
+                  p
+                    label
+                      input.checkboxes(type='checkbox')
+                      span
+                td(style="display:none;")= training._id
+                td= training.type
+                td= training.location
+                - var dd = (training.date.getDate() < 10 ? '0' : '') +training.date.getDate();
+                - var mm = ((training.date.getMonth()+1) < 10 ? '0' : '') +(training.date.getMonth()+1)
+                - var yyyy = training.date.getFullYear()
+                - var trainingDate = dd +'.' +mm +'.' +yyyy
+                td= trainingDate
+                td= training.timestart
+                td= training.timeend
+                td= training.priceyouth
+                td= training.priceadult
+                td= training._status
+
+        #locations
+          table#adminLocationTable.highlight.responsive-table
+            thead
+              tr
+                th check
+                th(style="display:none;") Location id
+                th Location Name
+                th Street
+                th Postal Code (Plz.)
+                th City
+                th Price Youth
+                th Price Adult
+                th Status
+            tbody
+
+            each location in data_locations
+
+              tr
+                td
+                  p
+                    label
+                      input.checkboxes(type='checkbox')
+                      span
+                td(style="display:none;")= location._id
+                td= location.location
+                td= location.street
+                td= location.plz
+                td= location.city
+                td= location.priceyouth
+                td= location.priceadult
+                td= location._status
+
+        #invoices
+          table#adminInvoicesTable.highlight.responsive-table
+            thead
+              tr
+                th check
+                th Invoice No.
+                th Date
+                th Name
+                th Lastname
+                th Email
+                th Amount
+                th Paid
+                th Balance
+                th Status
+            tbody
+
+            each invoice in data_invoices
+              tr
+                td
+                  p
+                    label
+                      input.checkboxes(type='checkbox')
+                      span
+                td= invoice.invoicenumber
+                - var dd = (invoice.invoicedate.getDate() < 10 ? '0' : '') +invoice.invoicedate.getDate();
+                - var mm = ((invoice.invoicedate.getMonth()+1) < 10 ? '0' : '') +(invoice.invoicedate.getMonth()+1)
+                - var yyyy = invoice.invoicedate.getFullYear()
+                - var invoiceDate = dd +'.' +mm +'.' +yyyy
+                td= invoiceDate
+                td= invoice.invoicename
+                td= invoice.invoicelastname
+                td= invoice.invoiceemail
+                td= invoice.invoicesum
+                td= invoice.invoicepaid
+                td= invoice.invoicebalance
+                td= invoice.invoicestatus
+
+// class="page-footer"
+footer.footer
+  nav.nav
+    div#footerdiv
+      p#footertext VFR Angelohe Training Booking Tool
+
+
+// Modal Structure Create new User
+#create_user_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Create a new User
+    .row
+      form#createUserForm.col.s12(method='post', action='/createusers')
+        .row
+          .input-field.col.s8
+            input.validate(type='text', name='name' required)
+            label(for='name') Name
+        .row
+          .input-field.col.s8
+            input.validate(type='text', name='lastname' required)
+            label(for='lastname') Lastname
+        .row
+          .input-field.col.s8
+            input.validate(type='text', name='birthdate' required)
+            label(for='birthdate') Birthdate
+        .row
+          .input-field.col.s8
+            input.validate(type='text', name='street' required)
+            label(for='street') Street
+        .row
+          .input-field.col.s8
+            input.validate(type='text', name='plz' required)
+            label(for='plz') Postal Code
+        .row
+          .input-field.col.s8
+            input.validate(type='text', name='city' required)
+            label(for='city') City
+        .row
+          .input-field.col.s8
+            input.validate(type='email', name='email', autocomplete='username' required)
+            label(for='email') Email
+        .row
+          .input-field.col.s8
+            input.validate(type='password', name='password', autocomplete='new-password' required)
+            label(for='password') Password
+        .row
+          .input-field.col.s8
+            input.validate(type='password', name='passwordrepeat', autocomplete='new-password' required)
+            label(for='passwordrepeat') Repeat Password
+        .row
+          .input-field.col.s8
+            input.validate(type='text', name='role' required)
+            label(for='role') Role (admin, player, coach)
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#createUserResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='createUserForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Update User
+#update_user_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Update User
+    .row
+      form#updateUserForm.col.s12(method='post', action='/callupdateusers')
+        .row
+          .input-field.col.s8
+            input#emailInputUpdateUser.readonly(type='email', name='email', value='null', readonly)
+            label(for='email') Email
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#updateUserResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='updateUserForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Update User Email
+#update_user_email_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Update User Email
+    .row
+      form#updateUserEmailForm.col.s12(method='post', action='/updateuseremail')
+        .row
+          .input-field.col.s8
+            input#emailInputUpdateUserEmail.readonly(type='email', name='email', value='null', readonly)
+            label(for='email') Current Email
+        .row
+          .input-field.col.s8
+            input.validate(type='email', name='newEmail', autocomplete='username')
+            label(for='newEmail') New Email
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#updateUserEmailResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='updateUserEmailForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Update User Status
+#update_user_status_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Update User Status
+    .row
+      form#updateUserStatusForm.col.s12(method='post', action='#')
+        .row
+          .input-field.col.s8
+            input#emailInputUpdateUserStatus.readonly(type='email', name='email', value='null', readonly)
+            label(for='email') Email
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#updateUserStatusResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button#activate_user.btn.waves-effect.waves-light(type='submit', form='updateUserStatusForm', formaction='/activateusers')
+      | Activate
+      i.material-icons.right send
+    button#terminate_user.btn.waves-effect.waves-light(type='submit', form='updateUserStatusForm', formaction='/terminateusers')
+      | Terminate
+      i.material-icons.right send
+    button#remove_user.btn.waves-effect.waves-light.red.darken-4(type='submit', form='updateUserStatusForm', formaction='/removeusers')
+      | Remove
+      i.material-icons.right send
+
+// Modal Structure Update User Password
+#update_user_password_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Set New User Password
+    .row
+      form#updateUserPasswordForm.col.s12(method='post', action='/setnewuserpassword')
+        .row
+          .input-field.col.s6
+            input#emailInputUpdateUserPassword.readonly(type='email', name='email', value='null', readonly)
+            label(for='email') Email
+        .row
+          .input-field.col.s8
+            input.validate(type='password', name='password', minlength='7', required)
+            label(for='password') New Password
+        .row
+          .input-field.col.s8
+            input.validate(type='password', name='passwordrepeat')
+            label(for='passwordrepeat') Repeat New Password
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#updateUserPasswordResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='updateUserPasswordForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Update Training
+#update_training_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Update Training
+    .row
+      form#updateTrainingForm.col.s12(method='post', action='/callupdatetrainings')
+        .row
+          .input-field.col.s8
+            input#idInputUpdateTraining.readonly(type='text', name='id', value='null', readonly)
+            label(for='id') Training ID
+        .row
+          .input-field.col.s8
+            input#locationInputUpdateTraining.readonly(type='text', name='location', value='null', readonly)
+            label(for='id') Location
+        .row
+          .input-field.col.s8
+            input#dateInputUpdateTraining.readonly(type='text', name='date', value='null', readonly)
+            label(for='date') Date
+
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#updateTrainingResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='updateTrainingForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Create Location
+#create_location_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Create Location
+    .row
+      form#createLocationForm.col.s12(method='post', action='/createlocations')
+        .row
+          .input-field.col.s8
+            input.validate(type='text', name='location')
+            label(for='location') Location Name
+          .input-field.col.s8
+            input.validate(type='text', name='street')
+            label(for='street') Street
+          .input-field.col.s8
+            input.validate(type='text', name='plz')
+            label(for='plz') Postal Code
+          .input-field.col.s8
+            input.validate(type='text', name='city')
+            label(for='city') City
+          .input-field.col.s8
+            input.validate(type='text', name='priceYouth')
+            label(for='priceYouth') Price Youth
+          .input-field.col.s8
+            input.validate(type='text', name='priceAdult')
+            label(for='priceAdult') Price Adult
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#createLocationResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='createLocationForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Update Location
+#update_location_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Update Location
+    .row
+      form#updateLocationForm.col.s12(method='post', action='/callupdatelocations')
+        .row
+          .input-field.col.s8
+            input#idInputUpdateLocationID.readonly(type='text', name='id', value='null', readonly)
+            label(for='id') Location ID
+
+          .input-field.col.s8
+            input#idInputUpdateLocationName.readonly(type='text', name='name', value='null', readonly)
+            label(for='name') Location Name
+
+          .input-field.col.s8
+            input#idInputUpdateLocationCity.readonly(type='text', name='city', value='null', readonly)
+            label(for='city') Location City
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#updateLocationResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='updateLocationForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Create Training
+#create_training_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Create Training
+    .row
+      form#createTrainingForm.col.s12(method='post', action='/callcreatetrainings')
+        .row
+          .input-field.col.s8
+            input#idInputCreateTrainingLocationID.readonly(type='text', name='id', value='null', readonly)
+            label(for='id') Location ID
+
+          .input-field.col.s8
+            input#idInputCreateTrainingLocationName.readonly(type='text', name='name', value='null', readonly)
+            label(for='name') Location Name
+
+          .input-field.col.s8
+            input#idInputCreateTrainingLocationCity.readonly(type='text', name='city', value='null', readonly)
+            label(for='city') Location City
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#createTrainingResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='createTrainingForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Create Invoice
+#user_invoicing_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Create Invoice for User
+    .row
+      form#userInvoicingForm.col.s12(method='post', action='/createinvoice')
+        .row
+          .input-field.col.s8
+            input#emailInputCreateUserInvoice.readonly(type='email', name='email', value='null', readonly)
+            label(for='email') Email
+        .row
+          .input-field.col.s8
+            input.validate(type='text', name='datefrom')
+            label(for='datefrom') Date from (yyyy-mm-dd)
+        .row
+          .input-field.col.s8
+            input.validate(type='text', name='dateto')
+            label(for='dateto') Date to (yyyy-mm-dd)
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#userInvoicingResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='userInvoicingForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Cancel Invoice
+#user_cancel_invoice_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Cancel Invoice
+    .row
+      form#stornoForm.col.s12(method='post', action='/callcancelinvoice')
+        .row
+          .input-field.col.s8
+            input#idInputCancelUserInvoice.readonly(type='text', name='invoicenum', value='null', readonly)
+            label(for='invoicenum') Invoice Number
+          .input-field.col.s8
+            input#dateInputCancelUserInvoice.readonly(type='text', name='invoicedate', value='null', readonly)
+            label(for='invoicedate') Invoice Date
+          .input-field.col.s8
+            input#emailInputCancelUserInvoice.readonly(type='text', name='invoiceemail', value='null', readonly)
+            label(for='invoiceemail') Invoice Email
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#stornoResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='stornoForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Create Invoice Payment
+#user_payment_invoice_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Payment Invoice
+    .row
+      form#paymentForm.col.s12(method='post', action='/callpayinvoice')
+        .row
+          .input-field.col.s8
+            input#idInputCreatePaymentInvoice.readonly(type='text', name='invoicenum', value='null', readonly)
+            label(for='invoicenum') Invoice Number
+          .input-field.col.s8
+            input#dateInputCreatePaymentInvoice.readonly(type='text', name='invoicedate', value='null', readonly)
+            label(for='invoicedate') Invoice Date
+          .input-field.col.s8
+            input#emailInputCreatePaymentInvoice.readonly(type='text', name='invoiceemail', value='null', readonly)
+            label(for='invoiceemail') Invoice Email
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#paymentResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='paymentForm')
+      | Submit
+      i.material-icons.right send
+
+// JavaScript at end of body for optimized loading
+script(type='text/javascript', src='js/materialize.min.js')
+script(type='text/javascript', src='js/auth_admin.js')

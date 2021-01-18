@@ -1,0 +1,378 @@
+doctype html
+head
+  title= `${title}`
+  // Import Google Icon Font
+  link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet')
+  // Import materialize.css
+  link(type='text/css', rel='stylesheet', href='css/materialize.min.css', media='screen,projection')
+  // Import index.css
+  link(type='text/css', rel='stylesheet', href='css/index.css')
+  // Let browser know website is optimized for mobile
+  meta(name='viewport', content='width=device-width, initial-scale=1.0, viewport-fit=cover')
+  // Let browser know website use utf-8 coding
+  meta(http-equiv='content-type', content='text/html; charset=utf-8')
+header.header
+
+  // My Bookings Dropdown Structure
+  ul#dropdown_mybookings.dropdown-content
+    li
+      a#bookTrainingBtn.modal-trigger(href='#book_training_modal') Book Training
+    li
+      a#cancelBookingBtn.modal-trigger(href='#cancel_training_modal') Cancel Booking
+
+  // My Bookings Dropdown Structure Mobile
+  ul#dropdown_mybookings_mobile.dropdown-content
+    li
+      a#bookTrainingMobileBtn.modal-trigger(href='#book_training_modal') Book Training
+    li
+      a#cancelBookingMobileBtn.modal-trigger(href='#cancel_training_modal') Cancel Booking
+
+  // My Data Dropdown Structure
+  ul#dropdown_mydata.dropdown-content
+    li
+      a#updateMyDataBtn.modal-trigger(href='#update_mydata_modal') Update My Data
+    li
+      a#changeMyEmailBtn.modal-trigger(href='#change_email_modal') Change Email
+    li
+      a#changeMyPasswordBtn.modal-trigger(href='#change_password_modal') Change Password
+
+  // My Data Dropdown Structure Mobile
+  ul#dropdown_mydata_mobile.dropdown-content
+    li
+      a#updateMyDataMobileBtn.modal-trigger(href='#update_mydata_modal') Update My Data
+    li
+      a#changeMyEmailMobileBtn.modal-trigger(href='#change_email_modal') Change Email
+    li
+      a#changeMyPasswordMobileBtn.modal-trigger(href='#change_password_modal') Change Password
+
+  // Main Navigation
+  nav.nav
+    .nav-wrapper
+      a.brand-logo#navtext Welcome #{name} #{lastname}
+      a.sidenav-trigger(href='#', data-target='mobile-sidenav')
+        i.material-icons menu
+      ul.right.hide-on-med-and-down
+        // Dropdown Trigger
+        li
+          a.dropdown-trigger(href='#!', data-target='dropdown_mybookings')
+            | My Bookings Management
+            i.material-icons.right arrow_drop_down
+        li
+          a.dropdown-trigger(href='#!', data-target='dropdown_mydata')
+            | My Data Management
+            i.material-icons.right arrow_drop_down
+        // logout
+        li
+          a(href='/logout') Logout
+
+  // Mobile Navigation
+  ul#mobile-sidenav.sidenav
+    li
+      a.sidenav-close(href='#')
+        i.material-icons close
+    // Dropdown Trigger
+    li
+      a.dropdown-trigger(href='#!', data-target='dropdown_mybookings_mobile')
+        | My Bookings Management
+        i.material-icons.right arrow_drop_down
+    li
+      a.dropdown-trigger(href='#!', data-target='dropdown_mydata_mobile')
+        | My Data Management
+        i.material-icons.right arrow_drop_down
+    // logout
+    li
+      a(href='/logout') Logout
+
+main.main
+  .row
+    .card
+      #gradient.card-content
+        h6#h6 Player Dashboard
+      .card-tabs
+        ul.tabs.tabs-fixed-width
+          li.tab
+            a.active(href='#trainings') Available Trainings
+          li.tab
+            a(href='#bookings') My Bookings
+          li.tab
+            a(href='#invoices') My Invoices
+          li.tab
+            a(href='#mydata') My Data
+
+      .card-content
+        #trainings
+          table#playerTrainingTable.highlight.responsive-table
+            thead
+              tr
+                th Check
+                th Training ID
+                th Type
+                th Location
+                th Date
+                th Time Start
+                th Time End
+                th Price Youth
+                th Price Adult
+            tbody
+
+            each training in data_availabletrainings
+
+              tr
+                td
+                  p
+                    label
+                      input.checkboxes(type='checkbox')
+                      span
+                td= training._id
+                td= training.type
+                td= training.location
+                - var dd = (training.date.getDate() < 10 ? '0' : '') +training.date.getDate();
+                - var mm = ((training.date.getMonth()+1) < 10 ? '0' : '') +(training.date.getMonth()+1)
+                - var yyyy = training.date.getFullYear()
+                - var trainingDate = dd +'.' +mm +'.' +yyyy
+                td= trainingDate
+                td= training.timestart
+                td= training.timeend
+                td= training.priceyouth
+                td= training.priceadult
+
+        #bookings
+          table#playerBookingTable.highlight.responsive-table
+            thead
+              tr
+                th Check
+                th Booking ID
+                th Type
+                th Location
+                th Date
+                th Time Start
+                th Time End
+                th Price
+                th Status
+            tbody
+
+            each booking in data_bookings
+
+              tr
+                td
+                  p
+                    label
+                      input.checkboxes(type='checkbox')
+                      span
+                td= booking._id
+                td= booking._booktrainingtype
+                td= booking._booktraininglocation
+                - var dd = (booking._booktrainingdate.getDate() < 10 ? '0' : '') +booking._booktrainingdate.getDate();
+                - var mm = ((booking._booktrainingdate.getMonth()+1) < 10 ? '0' : '') +(booking._booktrainingdate.getMonth()+1)
+                - var yyyy = booking._booktrainingdate.getFullYear()
+                - var bookingDate = dd +'.' +mm +'.' +yyyy
+                td= bookingDate
+                td= booking._booktrainingtimestart
+                td= booking._booktrainingtimeend
+                td= booking._booktrainingprice
+                td= booking._bookparticipation
+
+        #invoices
+          table.highlight.responsive-table
+            thead
+              tr
+                th Invoice No.
+                th Date
+                th Amount
+                th Paid
+                th Balance
+                th Status
+            tbody
+
+            each invoice in data_myinvoices
+
+              tr
+                td= invoice.invoicenumber
+                - var dd = (invoice.invoicedate.getDate() < 10 ? '0' : '') +invoice.invoicedate.getDate();
+                - var mm = ((invoice.invoicedate.getMonth()+1) < 10 ? '0' : '') +(invoice.invoicedate.getMonth()+1)
+                - var yyyy = invoice.invoicedate.getFullYear()
+                - var invoiceDate = dd +'.' +mm +'.' +yyyy
+                td= invoiceDate
+                td= invoice.invoicesum
+                td= invoice.invoicepaid
+                td= invoice.invoicebalance
+                td= invoice.invoicestatus
+
+        #mydata
+          table#playerMyDataTable.highlight.responsive-table
+            thead
+              tr
+                th Name
+                th Lastname
+                th Street
+                th Postal Code
+                th City
+                th Email
+                th Birthdate
+                th Role
+                th Age
+                th Category
+                th Status
+                th Balance
+            tbody
+              tr
+                td= data_myuser.name
+                td= data_myuser.lastname
+                td= data_myuser.street
+                td= data_myuser.plz
+                td= data_myuser.city
+                td#myDataEmail= data_myuser.email
+                - var dd = (data_myuser.birthdate.getDate() < 10 ? '0' : '') +data_myuser.birthdate.getDate();
+                - var mm = ((data_myuser.birthdate.getMonth()+1) < 10 ? '0' : '') +(data_myuser.birthdate.getMonth()+1)
+                - var yyyy = data_myuser.birthdate.getFullYear()
+                - var birthDate = dd +'.' +mm +'.' +yyyy
+                td= birthDate
+                td= data_myuser.role
+                - var yearInMs = 3.15576e+10;
+                - var currentDate = new Date();
+                - var currentDateInMs = currentDate.getTime();
+                - var birthDateInMs = data_myuser.birthdate.getTime();
+                - var age = Math.floor((currentDateInMs - birthDateInMs) / yearInMs).toFixed(0);
+                td= age
+                - if (age < 18) {var cat = 'youth'} else {var cat = 'adult'};
+                td= cat
+                td= data_myuser._status
+                td= data_myuser._balance
+
+// class="page-footer"
+footer.footer
+  nav.nav
+    div#footerdiv
+      p#footertext VFR Angelohe Training Booking Tool
+
+// Modal Structure Book Training
+#book_training_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Book Training
+    .row
+      form#bookTrainingForm.col.s12(method='post', action='/callbooktrainings')
+        .row
+          .input-field.col.s8
+            input#idInputBookTraining.readonly(type='text', name='id', value='null', readonly)
+            label(for='id') Training ID
+
+          .input-field.col.s8
+            input#locationInputBookTraining.readonly(type='text', name='name', value='null', readonly)
+            label(for='name') Location Name
+
+          .input-field.col.s8
+            input#dateInputBookTraining.readonly(type='text', name='date', value='null', readonly)
+            label(for='date') Date
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#bookTrainingResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='bookTrainingForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Cancel Booking
+#cancel_training_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Cancel Booking
+    .row
+      form#cancelTrainingForm.col.s12(method='post', action='/callcancelbookings')
+        .row
+          .input-field.col.s8
+            input#idInputCancelBooking.readonly(type='text', name='id', value='null', readonly)
+            label(for='id') Booking ID
+
+          .input-field.col.s8
+            input#locationInputCancelBooking.readonly(type='text', name='name', value='null', readonly)
+            label(for='name') Location Name
+
+          .input-field.col.s8
+            input#dateInputCancelBooking.readonly(type='text', name='date', value='null', readonly)
+            label(for='date') Date
+
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#cancelTrainingResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='cancelTrainingForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Update my Data
+#update_mydata_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Update my Data
+    .row
+      form#updateMyDataForm.col.s12(method='post', action='/callupdatemyuserdata')
+        .row
+          .input-field.col.s8
+            input#emailInputUpdateMyEmail.readonly(type='text', name='email', value='null', readonly)
+            label(for='email') My Email
+
+
+
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#updateMyDataResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='updateMyDataForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Change Email
+#change_email_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Change my Email
+    .row
+      form#changeEmailForm.col.s12(method='post', action='/updateuseremail')
+        .row
+          .input-field.col.s8
+            input#emailInputChangeMyEmail.readonly(type='text', name='email', value='null', readonly)
+            label(for='email') Current Email
+
+        .row
+          .input-field.col.s8
+            input.validate(type='email', name='newEmail')
+            label(for='newEmail') New Email
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#changeEmailResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='changeEmailForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Change Password
+#change_password_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Set New User Password
+    .row
+      form#changePasswordForm.col.s12(method='post', action='/setnewuserpassword')
+        .row
+          .input-field.col.s8
+            input.validate(type='password', name='currentpassword')
+            label(for='currentpassword') Current Password
+        .row
+          .input-field.col.s8
+            input.validate(type='password', name='password', minlength='7', required)
+            label(for='password') New Password
+        .row
+          .input-field.col.s8
+            input.validate(type='password', name='passwordrepeat')
+            label(for='passwordrepeat') Repeat New Password
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#changePasswordResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='changePasswordForm')
+      | Submit
+      i.material-icons.right send
+
+// JavaScript at end of body for optimized loading
+script(type='text/javascript', src='js/materialize.min.js')
+script(type='text/javascript', src='js/auth_player.js')

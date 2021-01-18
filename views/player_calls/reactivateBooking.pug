@@ -1,0 +1,98 @@
+doctype html
+head
+  title= `${title}`
+  // Import Google Icon Font
+  link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet')
+  // Import materialize.css
+  link(type='text/css', rel='stylesheet', href='../css/materialize.min.css', media='screen,projection')
+  // Import index.css
+  link(type='text/css', rel='stylesheet', href='../css/index.css')
+  // Let browser know website is optimized for mobile
+  meta(name='viewport', content='width=device-width, initial-scale=1.0, viewport-fit=cover')
+  // Let browser know website use utf-8 coding
+  meta(http-equiv='content-type', content='text/html; charset=utf-8')
+header.header
+  nav.nav
+    .nav-wrapper
+      a.brand-logo#navtext Welcome #{name} #{lastname}
+      a.sidenav-trigger(href='#', data-target='mobile-sidenav')
+        i.material-icons menu
+      ul.right.hide-on-med-and-down
+        li
+          a(href='/dashboard') Dashboard
+  ul#mobile-sidenav.sidenav
+    li
+      a.sidenav-close(href='#')
+        i.material-icons close
+    li
+      a(href='/dashboard') Dashboard
+
+main.main
+  .row
+    .col.s10.push-s1.m8.push-m2.l6.push-l3
+      .card
+        #gradient.card-content
+          h6#h6 Reactivate Booking - Confirm Booking
+        .card-content
+          .row
+            form#createTrainingForm.col.s12(method='post', action='/bookingreactivate')
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='name', value= name, readonly)
+                  label(for='name') Name
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='lastname', value= lastname, readonly)
+                  label(for='lastname') Lastname
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='email', value= email, readonly)
+                  label(for='email') Email
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='cat', value= cat, readonly)
+                  label(for='cat') Category
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='location', value= data_booking_location, readonly)
+                  label(for='location') Location Name
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='type', value= data_booking_type, readonly)
+                  label(for='type') Type
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='price', value= data_training_price, readonly)
+                  label(for='price') Price
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='date', value= data_training_date, readonly)
+                  label(for='date') Date
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='timeStart', value= data_training_timestart, readonly)
+                  label(for='timeStart') Time Start
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='timeEnd', value= data_training_timeend, readonly)
+                  label(for='timeEnd') Time End
+              .row
+                .input-field.col.s8
+                  input.readonly(type='text', name='id', value= data_booking_id, readonly)
+                  label(for='id') Booking Id
+        .card-action.right-align
+          a.btn.waves-effect.waves-light.grey.darken-1(href='/dashboard')
+            | Back
+            i.material-icons.right undo
+          button.btn.waves-effect.waves-light(type='submit', form='createTrainingForm')
+            | Confirm
+            i.material-icons.right check_circle
+// class="page-footer"
+footer.footer
+  nav.nav
+    div#footerdiv
+      p#footertext VFR Angelohe Training Booking Tool
+
+// JavaScript at end of body for optimized loading
+script(type='text/javascript', src='../js/materialize.min.js')
+script(type='text/javascript', src='../js/auth_player_calls.js')

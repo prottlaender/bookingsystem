@@ -1,0 +1,66 @@
+doctype html
+head
+  title= `${title}`
+  // Import Google Icon Font
+  link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet')
+  // Import materialize.css
+  link(type='text/css', rel='stylesheet', href='css/materialize.min.css', media='screen,projection')
+  // Import index.css
+  link(type='text/css', rel='stylesheet', href='css/index.css')
+  // Let browser know website is optimized for mobile
+  meta(name='viewport', content='width=device-width, initial-scale=1.0, viewport-fit=cover')
+  // Let browser know website use utf-8 coding
+  meta(http-equiv='content-type', content='text/html; charset=utf-8')
+header.header
+  nav.nav
+    .nav-wrapper
+      a.brand-logo#navtext VFR Angelohe Training Booking Tool
+      a.sidenav-trigger(href='#', data-target='mobile-sidenav')
+        i.material-icons menu
+      ul.right.hide-on-med-and-down
+        li
+          a(href='/') Login
+        li
+          a(href='/register') Register
+  ul#mobile-sidenav.sidenav
+    li
+      a.sidenav-close(href='#')
+        i.material-icons close
+    li
+      a(href='/') Login
+    li
+      a(href='/register') Register
+main.main
+  .row
+    .col.s10.push-s1.m8.push-m2.l6.push-l3
+      .card
+        .card-image
+          img(src='pics/ice-hockey-640.jpg')
+          span.card-title Login
+        .card-content
+          .row
+            form#loginForm.col.s12(method='post', action='/loginusers')
+              .row
+                .input-field.col.s6
+                  input.validate(type='email', name='email', autocomplete='username' required)
+                  label(for='email') Email
+              .row
+                .input-field.col.s6
+                  input.validate(type='password', name='password', autocomplete='current-password' required)
+                  label(for='password') Password
+        .card-action.right-align
+          button#loginResetFormbtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+            | Reset
+            i.material-icons.right cancel
+          button.btn.waves-effect.waves-light(type='submit', form='loginForm')
+            | Submit
+            i.material-icons.right send
+// class="page-footer"
+footer.footer
+  nav.nav
+    div#footerdiv
+      p#footertext VFR Angelohe Training Booking Tool
+
+// JavaScript at end of body for optimized loading
+script(type='text/javascript', src='js/materialize.min.js')
+script(type='text/javascript', src='js/index.js')
