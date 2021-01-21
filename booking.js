@@ -161,7 +161,7 @@ app.get('/dashboard', redirectLogin, async (req, res) => {
     const location_query = Location.find( {} ).sort({location: 'desc'});
     var locations = await location_query.exec();
 
-    const booking_query = Booking.find( {} ).sort({_booktraininglocation: 'desc'});
+    const booking_query = Booking.find( {} ).sort({_booktrainingdate: 'desc'});
     var bookings = await booking_query.exec();
 
     const invoice_query = Invoice.find( {} ).sort({invoicedate: 'desc'});
@@ -300,6 +300,8 @@ app.post('/callcancelinvoice', invoiceController.callCancelInvoice)
 app.post('/cancelinvoice', invoiceController.cancelInvoice)
 app.post('/callpayinvoice', invoiceController.callPayInvoice)
 app.post('/payinvoice', invoiceController.payInvoice)
+app.post('/callrepayinvoice', invoiceController.callRePayInvoice)
+app.post('/repayinvoice', invoiceController.rePayInvoice)
 
 // Player Booking Management
 app.post('/callbooktrainings', bookingController.callBookTrainings)

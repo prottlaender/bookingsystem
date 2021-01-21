@@ -829,3 +829,87 @@ document.getElementById('createUserInvoicePaymentMobileBtn').addEventListener('c
   }
 // End of the onclick event listener
 });
+
+// Create Invoice Re-Payment
+document.getElementById('createUserInvoiceRe-PaymentBtn').addEventListener('click', function() {
+  //Get the table
+  var table = document.getElementById("adminInvoicesTable");
+  //Collect all CheckBoxes from table in an checkBoxes array
+  var checkBoxes = table.getElementsByClassName("checkboxes");
+  //Create an empty array to collect checked data
+  var arr = []
+  // loop through the checkBoxes
+  for (var i = 0; i < checkBoxes.length; i++) {
+   // If the checkbox i is checked
+   if (checkBoxes[i].checked) {
+     // Store the HTML table row element where checkbox is checked in a variable
+     var row = checkBoxes[i].parentNode.parentNode.parentNode.parentNode;
+     // Store the innerHTML value of the cell in a variable (cells starting with 0)
+     var invoiceID = row.cells[1].innerHTML;
+     var invoiceDate = row.cells[2].innerHTML;
+     var invoiceEmail = row.cells[5].innerHTML;
+     // Push the data into the array
+     arr.push(invoiceID, invoiceDate, invoiceEmail);
+   }
+  }
+  // Ensure that only one checkBox is selected
+  if (arr.length == 3) {
+   document.getElementById("idInputCreateRe-PaymentInvoice").value=arr[0];
+   document.getElementById("dateInputCreateRe-PaymentInvoice").value=arr[1];
+   document.getElementById("emailInputCreateRe-PaymentInvoice").value=arr[2];
+
+ } else if (arr.length > 3) {
+   document.getElementById("idInputCreateRe-PaymentInvoice").value='pls. select only one invoice';
+   document.getElementById("dateInputCreateRe-PaymentInvoice").value='No Data';
+   document.getElementById("emailInputCreatePaymentInvoice").value='No Data';
+
+  } else {
+   document.getElementById("idInputCreateRe-PaymentInvoice").value='pls. select exactly one invoice';
+   document.getElementById("dateInputCreateRe-PaymentInvoice").value='No Data';
+   document.getElementById("emailInputCreateRe-PaymentInvoice").value='No Data';
+
+  }
+// End of the onclick event listener
+});
+
+// Create Invoice Re-Payment Mobile
+document.getElementById('createUserInvoiceRe-PaymentMobileBtn').addEventListener('click', function() {
+  //Get the table
+  var table = document.getElementById("adminInvoicesTable");
+  //Collect all CheckBoxes from table in an checkBoxes array
+  var checkBoxes = table.getElementsByClassName("checkboxes");
+  //Create an empty array to collect checked data
+  var arr = []
+  // loop through the checkBoxes
+  for (var i = 0; i < checkBoxes.length; i++) {
+   // If the checkbox i is checked
+   if (checkBoxes[i].checked) {
+     // Store the HTML table row element where checkbox is checked in a variable
+     var row = checkBoxes[i].parentNode.parentNode.parentNode.parentNode;
+     // Store the innerHTML value of the cell in a variable (cells starting with 0)
+     var invoiceID = row.cells[1].innerHTML;
+     var invoiceDate = row.cells[2].innerHTML;
+     var invoiceEmail = row.cells[5].innerHTML;
+     // Push the data into the array
+     arr.push(invoiceID, invoiceDate, invoiceEmail);
+   }
+  }
+  // Ensure that only one checkBox is selected
+  if (arr.length == 3) {
+   document.getElementById("idInputCreateRe-PaymentInvoice").value=arr[0];
+   document.getElementById("dateInputCreateRe-PaymentInvoice").value=arr[1];
+   document.getElementById("emailInputCreateRe-PaymentInvoice").value=arr[2];
+
+ } else if (arr.length > 3) {
+   document.getElementById("idInputCreateRe-PaymentInvoice").value='pls. select only one invoice';
+   document.getElementById("dateInputCreateRe-PaymentInvoice").value='No Data';
+   document.getElementById("emailInputCreatePaymentInvoice").value='No Data';
+
+  } else {
+   document.getElementById("idInputCreateRe-PaymentInvoice").value='pls. select exactly one invoice';
+   document.getElementById("dateInputCreateRe-PaymentInvoice").value='No Data';
+   document.getElementById("emailInputCreateRe-PaymentInvoice").value='No Data';
+
+  }
+// End of the onclick event listener
+});

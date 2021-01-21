@@ -5,7 +5,7 @@ var invoiceSchema = new Schema({
   invoicenumber: {
     type: String,
     validate: function(invoicenumber) {
-      return /^[A-Z]{1}-[A-Z]{4}-FROM-[0-9]{8}-TO-[0-9]{8}-[0-9]{3}-INV$/.test(invoicenumber)
+      return /^[0-9]{4}-[0-9]{2}-[0-9]{2}-[A-Z]{1}-[A-Z]{4}-[0-9]{3}-INV$/.test(invoicenumber)
     }
   },
 

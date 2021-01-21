@@ -77,7 +77,14 @@ var bookingSchema = new Schema({
     required: true,
     default: 'booked',
     enum: ['booked', 'canceled', 'rejected', 'participated', 'invoice']
-  }
+  },
+
+  _bookinvoicenumber: {
+    type: String,
+    validate: function(invoicenumber) {
+      return /^[0-9]{4}-[0-9]{2}-[0-9]{2}-[A-Z]{1}-[A-Z]{4}-[0-9]{3}-INV$/.test(invoicenumber)
+    }
+  },
 
 }, { timestamps: true });
 

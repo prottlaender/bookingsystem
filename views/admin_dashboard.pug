@@ -67,6 +67,8 @@ header.header
       a#cancelUserInvoiceBtn.modal-trigger(href='#user_cancel_invoice_modal') Cancel Invoice
     li
       a#createUserInvoicePaymentBtn.modal-trigger(href='#user_payment_invoice_modal') Create Payment
+    li
+      a#createUserInvoiceRe-PaymentBtn.modal-trigger(href='#user_repayment_invoice_modal') Create Re-Payment
 
   // Invoice Management Dropdown Structure Mobile
   ul#dropdown_invoicing_mobile.dropdown-content
@@ -76,6 +78,8 @@ header.header
       a#cancelUserInvoiceMobileBtn.modal-trigger(href='#user_cancel_invoice_modal') Cancel Invoice
     li
       a#createUserInvoicePaymentMobileBtn.modal-trigger(href='#user_payment_invoice_modal') Create Payment
+    li
+      a#createUserInvoiceRe-PaymentMobileBtn.modal-trigger(href='#user_repayment_invoice_modal') Create Re-Payment
 
   // Main Navigation
   nav.nav
@@ -615,14 +619,7 @@ footer.footer
           .input-field.col.s8
             input#emailInputCreateUserInvoice.readonly(type='email', name='email', value='null', readonly)
             label(for='email') Email
-        .row
-          .input-field.col.s8
-            input.validate(type='text', name='datefrom')
-            label(for='datefrom') Date from (yyyy-mm-dd)
-        .row
-          .input-field.col.s8
-            input.validate(type='text', name='dateto')
-            label(for='dateto') Date to (yyyy-mm-dd)
+
   .modal-footer
     a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
     button#userInvoicingResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
@@ -679,6 +676,31 @@ footer.footer
       | Reset
       i.material-icons.right cancel
     button.btn.waves-effect.waves-light(type='submit', form='paymentForm')
+      | Submit
+      i.material-icons.right send
+
+// Modal Structure Create Invoice Re-Payment
+#user_repayment_invoice_modal.modal.modal-fixed-footer
+  .modal-content
+    h4 Re-Payment Invoice
+    .row
+      form#repaymentForm.col.s12(method='post', action='/callrepayinvoice')
+        .row
+          .input-field.col.s8
+            input#idInputCreateRe-PaymentInvoice.readonly(type='text', name='invoicenum', value='null', readonly)
+            label(for='invoicenum') Invoice Number
+          .input-field.col.s8
+            input#dateInputCreateRe-PaymentInvoice.readonly(type='text', name='invoicedate', value='null', readonly)
+            label(for='invoicedate') Invoice Date
+          .input-field.col.s8
+            input#emailInputCreateRe-PaymentInvoice.readonly(type='text', name='invoiceemail', value='null', readonly)
+            label(for='invoiceemail') Invoice Email
+  .modal-footer
+    a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
+    button#paymentResetFormBtn.btn.waves-effect.waves-light.grey.darken-1(type='submit', name='action')
+      | Reset
+      i.material-icons.right cancel
+    button.btn.waves-effect.waves-light(type='submit', form='repaymentForm')
       | Submit
       i.material-icons.right send
 
