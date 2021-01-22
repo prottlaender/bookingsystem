@@ -24,48 +24,8 @@ document.getElementById('createUserResetFormBtn').addEventListener('click', func
   document.getElementById("createUserForm").reset();
 })
 
-document.getElementById('updateUserResetFormBtn').addEventListener('click', function() {
-  document.getElementById("updateUserForm").reset();
-})
-
-document.getElementById('updateUserEmailResetFormBtn').addEventListener('click', function() {
-  document.getElementById("updateUserEmailForm").reset();
-})
-
-document.getElementById('updateUserStatusResetFormBtn').addEventListener('click', function() {
-  document.getElementById("updateUserStatusForm").reset();
-})
-
-document.getElementById('updateUserPasswordResetFormBtn').addEventListener('click', function() {
-  document.getElementById("updateUserPasswordForm").reset();
-})
-
-document.getElementById('userInvoicingResetFormBtn').addEventListener('click', function() {
-  document.getElementById("userInvoicingForm").reset();
-})
-
-document.getElementById('createTrainingResetFormBtn').addEventListener('click', function() {
-  document.getElementById("createTrainingForm").reset();
-})
-
-document.getElementById('updateTrainingResetFormBtn').addEventListener('click', function() {
-  document.getElementById("updateTrainingForm").reset();
-})
-
 document.getElementById('createLocationResetFormBtn').addEventListener('click', function() {
   document.getElementById("createLocationForm").reset();
-})
-
-document.getElementById('updateLocationResetFormBtn').addEventListener('click', function() {
-  document.getElementById("updateLocationForm").reset();
-})
-
-document.getElementById('paymentResetFormBtn').addEventListener('click', function() {
-  document.getElementById("paymentForm").reset();
-})
-
-document.getElementById('stornoResetFormBtn').addEventListener('click', function() {
-  document.getElementById("stornoForm").reset();
 })
 
 // Check CheckBoxes Functionalities

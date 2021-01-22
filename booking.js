@@ -165,7 +165,7 @@ app.get('/dashboard', redirectLogin, async (req, res) => {
     var bookings = await booking_query.exec();
 
     const invoice_query = Invoice.find( {} ).sort({invoicedate: 'desc'});
-    var invoices = await invoice_query .exec();
+    var invoices = await invoice_query.exec();
 
     res.status(200).render('admin_dashboard', {
       title: 'Admin Dashboard Page',

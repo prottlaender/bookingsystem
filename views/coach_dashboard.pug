@@ -88,8 +88,17 @@ footer.footer
       form#selectTrainingForm.col.s12(method='post', action='/callparticipants')
         .row
           .input-field.col.s8
-            input#idinput.readonly(type='text', name='id', value='null', readonly)
+            input#idInputCoachSelectTraining.readonly(type='text', name='id', value='null', readonly)
             label(for='id') Training ID
+
+          .input-field.col.s8
+            input#locationInputCoachSelectTraining.readonly(type='text', name='name', value='null', readonly)
+            label(for='name') Location Name
+
+          .input-field.col.s8
+            input#dateInputCoachSelectTraining.readonly(type='text', name='date', value='null', readonly)
+            label(for='date') Date
+
   .modal-footer
     a.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close
     button.btn.waves-effect.waves-light(type='submit', form='selectTrainingForm')

@@ -30,21 +30,29 @@ var table = document.getElementById("coachTrainingsTable");
      // Store the HTML table row element where checkbox is checked in a variable
      var row = checkBoxes[i].parentNode.parentNode.parentNode.parentNode;
      // Store the innerHTML value of the second cell in a variable (cells starting with 0)
-     var data = row.cells[1].innerHTML;
+     var trainingId = row.cells[1].innerHTML;
+     var trainingLocation = row.cells[3].innerHTML;
+     var trainingDate = row.cells[2].innerHTML;
      // Push the training data (training ID) into the array
-     arr.push(data);
+     arr.push(trainingId, trainingLocation, trainingDate);
    }
  }
 
- if (arr.length == 1) {
-   document.getElementById("idinput").value=arr;
+ if (arr.length == 3) {
+   document.getElementById("idInputCoachSelectTraining").value=arr[0];
+   document.getElementById("locationInputCoachSelectTraining").value=arr[1];
+   document.getElementById("dateInputCoachSelectTraining").value=arr[2];
 
- } else if (arr.length > 1) {
-   document.getElementById("idinput").value='pls. select only one value';
+ } else if (arr.length > 3) {
+   document.getElementById("idInputCoachSelectTraining").value='pls. select only one value';
+   document.getElementById("locationInputCoachSelectTraining").value='no Data'
+   document.getElementById("dateInputCoachSelectTraining").value='no Data'
 
  } else {
-   document.getElementById("idinput").value='pls. select value';
+   document.getElementById("idInputCoachSelectTraining").value='pls. select value';
+   document.getElementById("locationInputCoachSelectTraining").value='no Data'
+   document.getElementById("dateInputCoachSelectTraining").value='no Data'
 
  }
- 
+
 }

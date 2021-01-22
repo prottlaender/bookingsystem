@@ -19,26 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
   var instances = M.Modal.init(modal_elems, {opacity: '0.4', preventScrolling: false, dismissible: true});
 });
 
-document.getElementById('bookTrainingResetFormBtn').addEventListener('click', function() {
-  document.getElementById("bookTrainingForm").reset();
-})
-
-document.getElementById('cancelTrainingResetFormBtn').addEventListener('click', function() {
-  document.getElementById("cancelTrainingForm").reset();
-})
-
-document.getElementById('updateMyDataResetFormBtn').addEventListener('click', function() {
-  document.getElementById("updateMyDataForm").reset();
-})
-
-document.getElementById('changeEmailResetFormBtn').addEventListener('click', function() {
-  document.getElementById("changeEmailForm").reset();
-})
-
-document.getElementById('changePasswordResetFormBtn').addEventListener('click', function() {
-  document.getElementById("changePasswordForm").reset();
-})
-
 // Book Training
 document.getElementById('bookTrainingBtn').addEventListener('click', function() {
   //Get the table
