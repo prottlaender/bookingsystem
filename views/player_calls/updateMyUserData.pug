@@ -61,15 +61,15 @@ main.main
                   label(for='updateRole') Role
               .row
                 .input-field.col.s8
-                  input.readonly(type='text', name='updateBirthdate', value= data_user_birthdate, readonly)
-                  label(for='updateBirthdate') New Birthdate
+                  input.validate(type='text', name='birthdate', value= data_user_birthdate)
+                  label(for='birthdate') New Birthdate (yyyy-mm-dd)
               .row
                 .input-field.col.s8
-                  input.readonly(type='text', name='updateName', value= data_user_name, readonly)
+                  input.validate(type='text', name='updateName', value= data_user_name)
                   label(for='updateName') New Name
               .row
                 .input-field.col.s8
-                  input.readonly(type='text', name='updateLastname', value= data_user_lastname, readonly)
+                  input.validate(type='text', name='updateLastname', value= data_user_lastname)
                   label(for='updateLastname') New Lastname
               .row
                 .input-field.col.s8

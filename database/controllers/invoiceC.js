@@ -18,7 +18,7 @@ module.exports = {
 
     // Invoice date is defined as the current date
     // Attention. bookinvoiceDate manipulated for testing !!!!!!!!!!
-    const currentDate = new Date('2021-02-01');
+    const currentDate = new Date('2021-03-01');
     // Format current date
     const dd = (currentDate.getDate() < 10 ? '0' : '') +currentDate.getDate();
     const mm = ((currentDate.getMonth()+1) < 10 ? '0' : '') +(currentDate.getMonth()+1)

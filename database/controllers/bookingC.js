@@ -216,8 +216,6 @@ module.exports = {
     const timeStart = req.body.timeStart
     const timeEnd = req.body.timeEnd
 
-
-
     try {
 
       Booking.findOne({ _id: id }, function(error, booking) {
@@ -297,13 +295,13 @@ module.exports = {
   callCancelBooking: async function(req, res, next) {
     // assign input data from request body to input variables
     const id = req.body.id
-
+    
     try {
 
       Booking.findOne( { _id: id }, function(error, bookingtocancel) {
         if (!bookingtocancel) {
           // if no Booking found end request and send response
-          var message = 'Booking not found. Cancel Booking not possible';
+          var message = 'Booking not found. Booking might be in the past. Cancel Booking not possible';
           res.status(400).redirect('/400badRequest?message='+message);
 
         // End Booking not found condition

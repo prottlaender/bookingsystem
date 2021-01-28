@@ -24,7 +24,6 @@ module.exports = {
     const birthdate = req.body.birthdate
     const inputemail = req.body.email
     const email = inputemail.toLowerCase()
-
     const password = req.body.password
     const passwordrepeat = req.body.passwordrepeat
     const role = req.body.role
@@ -41,7 +40,6 @@ module.exports = {
         email: email,
         password: password,
         role: role,
-        _invoices: [],
       })
 
       newUser.password = await bcrypt.hash(newUser.password, saltRounds)
@@ -51,7 +49,7 @@ module.exports = {
         User.findOne({ email: email }, function(error, user) {
           if (user) {
             // if user already exist end request and send response
-            var message = 'User already exist. Create User not possible';
+            var message = 'User already with this email exist. Create User not possible';
             res.status(400).redirect('/400badRequest?message='+message);
 
           } else {
@@ -273,8 +271,9 @@ module.exports = {
     const inputemail = req.body.email
     const email = inputemail.toLowerCase()
 
-    //const updateName = req.body.updateName
-    //const updateLastname = req.body.updateLastname
+    const updateBirthdate = req.body.birthdate
+    const updateName = req.body.updateName
+    const updateLastname = req.body.updateLastname
     const updateStreet = req.body.updateStreet
     const updatePlz = req.body.updatePlz
     const updateCity = req.body.updateCity
@@ -288,11 +287,12 @@ module.exports = {
           res.status(400).redirect('/400badRequest?message='+message);
 
         } else {
-          //user.name = updateName
-          //user.lastname = updateLastname
+          user.name = updateName
+          user.lastname = updateLastname
           user.street = updateStreet
           user.plz = updatePlz
           user.city = updateCity
+          user.birthdate = updateBirthdate
 
           user.save(function(err, up_user) {
             if (err) {
@@ -378,7 +378,7 @@ module.exports = {
                         res.send('An err occured: ' +err.message);
 
                       } else {
-                        var message = 'User email update successful. No Bookings Found to update User email on Bookings. Your logged out successfully';
+                        var message = 'User email update successful. No Bookings Found to update User email on Bookings. Login with your new Email';
                         //res.status(200).redirect('/200success?message='+message);
                         res.status(200).clearCookie('booking').redirect('/200success?message='+message);
                       }
@@ -390,7 +390,7 @@ module.exports = {
                          res.send('An err occured: ' +err.message);
 
                        } else {
-                         var message = 'User email update successful. User email on Bookings updated. Logon with your new Email';
+                         var message = 'User email update successful. User email on Bookings updated. Login with your new Email';
                          res.status(200).clearCookie('booking').redirect('/200success?message='+message);
 
                        }
@@ -428,6 +428,14 @@ module.exports = {
           res.status(400).redirect('/400badRequest?message='+message);
 
         } else {
+
+          if (user._status == 'terminated') {
+
+            var message = 'User status is already terminated. Terminate user not possible';
+            res.status(400).redirect('/400badRequest?message='+message);
+
+          } else {
+
             if (user._balance > 0) {
               // if result show items (example result object: {n: 2, nModified: 2, ok: 2}) to update author email successful end request and send response
               var message = 'User can not be terminated because users balance is greater 0';
@@ -449,6 +457,7 @@ module.exports = {
               })
             }
           }
+        }
       })
 
     } catch (error) {
@@ -468,12 +477,21 @@ module.exports = {
     try {
       // try to find a user by email and catch error in case query fail
       User.findOne({ email: email }, function(error, user) {
+
        if (!user) {
           // if no user found end request and send response
           var message = 'User not found. Activate User not possible';
           res.status(400).redirect('/400badRequest?message='+message);
 
         } else {
+
+          if (user._status == 'active') {
+
+            var message = 'User is already active. Activate user not possible';
+            res.status(400).redirect('/400badRequest?message='+message);
+
+          } else {
+
             // if user exist update user email with updateEmail and save user
             user._status = updateStatus
             user.save(function(err, up_user) {
@@ -490,6 +508,7 @@ module.exports = {
               }
             })
           }
+        }
       })
 
     } catch (error) {
@@ -507,6 +526,7 @@ module.exports = {
     const email = inputemail.toLowerCase()
 
     try {
+
       User.findOne({ email: email }, function(error, user) {
         if(!user) {
           // if no user found end request and send response
@@ -520,7 +540,7 @@ module.exports = {
 
         } else {
 
-          if(user._status !== 'terminated') {
+          if (user._status !== 'terminated') {
             // if user status is not terminated end request and send response
             var message = 'User Status is not terminated. Remove User not possible';
             res.status(400).redirect('/400badRequest?message='+message);

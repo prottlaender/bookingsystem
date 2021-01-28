@@ -37,23 +37,23 @@ main.main
             form#updateUserForm.col.s12(method='post', action='/updateuser')
               .row
                 .input-field.col.s8
-                  input.readonly(type='text', name='email', value= data_user_email, readonly='')
+                  input.readonly(type='text', name='email', value= data_user_email, readonly)
                   label(for='email') User Email
               .row
                 .input-field.col.s8
-                  input.readonly(type='text', name='balance', value= data_user_balance, readonly='')
+                  input.readonly(type='text', name='balance', value= data_user_balance, readonly)
                   label(for='balance') Balance
               .row
                 .input-field.col.s8
-                  input.readonly(type='text', name='status', value= data_user_status, readonly='')
+                  input.readonly(type='text', name='status', value= data_user_status, readonly)
                   label(for='status') Status
               .row
                 .input-field.col.s8
-                  input.readonly(type='text', name='age', value= calc_age, readonly='')
+                  input.readonly(type='text', name='age', value= calc_age, readonly)
                   label(for='age') Age
               .row
                 .input-field.col.s8
-                  input.readonly(type='text', name='cat', value= calc_cat, readonly='')
+                  input.readonly(type='text', name='cat', value= calc_cat, readonly)
                   label(for='cat') Category
               .row
                 .input-field.col.s8
@@ -78,11 +78,11 @@ main.main
               .row
                 .input-field.col.s8
                   input.validate(type='text', name='birthdate', value= calc_birthdate)
-                  label(for='updateBirthdate') New Birthdate
+                  label(for='updateBirthdate') New Birthdate (yyyy-mm-dd)
               .row
                 .input-field.col.s8
                   input.validate(type='text', name='role', value= data_user_role)
-                  label(for='updateRole') New Role
+                  label(for='updateRole') New Role (admin, player, coach)
         .card-action.right-align
           a.btn.waves-effect.waves-light.grey.darken-1(href='/dashboard')
             | Back

@@ -110,20 +110,6 @@ const birthdateFormatValidation = (req, res, next) => {
   }
 }
 
-// middleware to validate role
-const roleValidation = (req, res, next) => {
-  const role = req.body.role;
-
-  if (role !== 'admin' && role !== 'player' && role !== 'coach') {
-    var message = 'Role is not correct. Pls. use role player or coach';
-    res.status(400).redirect('/400badRequest?message='+message);
-
-  } else {
-    next()
-  }
-
-}
-
 // For each navigation link create get routes and send HTML to the Browser
 app.get('/', redirectDashboard, (req, res) => {
   console.log(req.url);
@@ -271,12 +257,12 @@ app.get('/400badRequest', (req, res) => {
 })
 
 // User Registration and Authentication
-app.post('/createusers', birthdateFormatValidation, roleValidation, userController.createUser)
+app.post('/createusers', birthdateFormatValidation, userController.createUser)
 app.post('/loginusers', userController.loginUser)
 
 // Admin User Management
 app.post('/callupdateusers', userController.callUpdateUsers)
-app.post('/updateuser', birthdateFormatValidation, roleValidation, userController.updateUser)
+app.post('/updateuser', birthdateFormatValidation, userController.updateUser)
 app.post('/updateuseremail', userController.updateUserEmail)
 app.post('/terminateusers', userController.terminateUser)
 app.post('/activateusers', userController.activateUser)
@@ -310,7 +296,7 @@ app.post('/bookingreactivate', bookingController.bookingReactivate)
 app.post('/callcancelbookings', bookingController.callCancelBooking)
 app.post('/cancelbookings', bookingController.cancelBooking)
 app.post('/callupdatemyuserdata', userController.callUpdateMyUserData)
-app.post('/updatemyuserdata', userController.updateMyUserData)
+app.post('/updatemyuserdata', birthdateFormatValidation, userController.updateMyUserData)
 
 // Coach Confirmation Management
 app.post('/callparticipants', bookingController.callParticipants)

@@ -72,40 +72,6 @@ var userSchema = new Schema({
     default: 'awaitapproval',
     enum: ['active', 'terminated', 'awaitapproval']
   },
-  _invoices: [{
-    invoicenumber: {
-      type: String,
-      validate: function(invoicenumber) {
-        return /^[A-Z]{1}-[A-Z]{4}-FROM-[0-9]{8}-TO-[0-9]{8}-[0-9]{3}-INV$/.test(invoicenumber)
-      }
-    },
-    invoicesum: {
-      type: String,
-      validate: function(invoicesum) {
-        return /^(([0-9])|([1-9][0-9]{1,4})).([0][0-9]|[1-9][0-9])$/.test(invoicesum)
-      }
-    },
-    invoicepaid: {
-      type: String,
-      validate: function(invoicepaid) {
-        return /^(-|)(([0-9])|([1-9][0-9]{1,4})).([0][0-9]|[1-9][0-9])$/.test(invoicepaid)
-      }
-     },
-    invoicebalance: {
-      type: String,
-      validate: function(invoicebalance) {
-        return /^(-|)(([0-9])|([1-9][0-9]{1,4})).([0][0-9]|[1-9][0-9])$/.test(invoicebalance)
-      }
-    },
-    invoicedate: {
-      type: Date
-    },
-    invoicestatus: {
-      type: String,
-      enum: ['open', 'paid', 'storno']
-    },
-    invoicedbookings: []
-  }],
 
 }, { timestamps: true });
 
