@@ -16,3 +16,5 @@
     #> node booking.js
     
     ```
+
+3. Final Asumptions
