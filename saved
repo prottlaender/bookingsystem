@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <title>Home Page</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+
+    <div class="grid-container">
+
+      <div class="header" id="responsivenav">
+          <!-- (this) refers to the DOM element to which the onclick attribute belongs -->
+          <a class="burgericon" onclick="myFunction(this)">
+            <div class="burgerline" id="bar1"></div>
+            <div class="burgerline" id="bar2"></div>
+            <div class="burgerline" id="bar3"></div>
+          </a>
+          <a class="link" href="/">Home</a>
+          <a class="link" href="/login.html">Login</a>
+          <a class="link" href="/register.html">Register</a>
+          <a class="link" href="/dashboard.html">Dashboard</a>
+          <a class="link" href="/logout">Logout</a>
+      </div>
+
+      <div class="main">
+          <h1>Welcome to my Home Page (nginx localweb Port 7443ssl)</h1>
+          <p class="maintext">The content of my page goes here</p>
+      </div>
+
+      <div class="footer">
+          <p class="footertext">Patrick Rottländer all rights reserved</p>
+      </div>
+
+    </div>
+
+    <script>
+    // the (burgerlines) parameter represent the DOM element that has been given to the function
+    function myFunction(burgerlines) {
+      burgerlines.classList.toggle('change');
+
+      var reponsiveNavElement = document.getElementById('responsivenav');
+        if (reponsiveNavElement.className === 'header') {
+          reponsiveNavElement.classList.add('responsive')
+        } else {
+          reponsiveNavElement.className = 'header';
+        }
+      }
+    </script>
+
+  </body>
+  </html>

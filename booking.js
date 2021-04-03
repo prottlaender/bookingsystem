@@ -4,27 +4,34 @@
 const http = require('http');
 // express module
 const express = require('express');
+// Create the express app
+const app = express();
+// Trust the first Proxy
+app.set('trust proxy', 1);
+// HTTP header security module
+const helmet = require('helmet');
+// use secure HTTP headers using helmet
+app.use(
+  helmet({
+      frameguard: {
+        action: "deny",
+      },
+      referrerPolicy: {
+        policy: "no-referrer",
+    },
+    })
+  );
+
+// use express.static and locate static files in /static folder in the root of the app
+app.use(express.static('./static'));
+// use express.urlencoded to parse incomming requests with urlencoded payloads
+app.use(express.urlencoded({ extended: true }));
+// Set Pug Template Engine
+app.set('view engine', 'pug')
+app.set('views', './views')
+
 // envy module to manage environment variables
 const envy = require('envy');
-// hTTP header security module
-const helmet = require('helmet');
-// server side session and cookie module
-const session = require('express-session');
-// mongodb session storage module
-const connectMdbSession = require('connect-mongodb-session');
-
-// load controllers and models
-const userController = require('./database/controllers/userC');
-const User = require('./database/models/userM');
-const trainingController = require('./database/controllers/trainingC');
-const Training = require('./database/models/trainingM');
-const locationController = require('./database/controllers/locationC');
-const Location = require('./database/models/locationM');
-const bookingController = require('./database/controllers/bookingC');
-const Booking = require('./database/models/bookingM');
-const invoiceController = require('./database/controllers/invoiceC');
-const Invoice = require('./database/models/invoiceM');
-
 // set the environment variables
 const env = envy()
 const port = env.port
@@ -33,38 +40,25 @@ const mongodbpath = env.mongodbpath
 const sessionsecret = env.sessionsecret
 const sessioncookiename = env.sessioncookiename
 
+// server side session and cookie module
+const session = require('express-session');
+// mongodb session storage module
+const connectMdbSession = require('connect-mongodb-session');
 // load StartMongoServer function from db configuration file
 const StartMongoServer = require('./database/db');
 // start MongoDB server
 StartMongoServer();
-
 // Create MongoDB session storage object
 const MongoDBStore = connectMdbSession(session)
-
 // create new session store in mongodb
 const store = new MongoDBStore({
   uri: mongodbpath,
   collection: 'col_sessions'
 });
-
 // catch errors in case store creation fails
 store.on('error', function(error) {
   console.log(`error store session in session store: ${error.message}`);
 });
-
-// Create the express app
-const app = express();
-
-// Set Pug Template Engine
-app.set('view engine', 'pug')
-app.set('views', './views')
-
-// use express.static and locate static files in /static folder in the root of the app
-app.use(express.static('./static'));
-// use express.urlencoded to parse incomming requests with urlencoded payloads
-app.use(express.urlencoded({ extended: true }));
-// use secure HTTP headers using helmet
-app.use(helmet())
 // use session to create session and session cookie
 app.use(session({
   secret: sessionsecret,
@@ -78,6 +72,18 @@ app.use(session({
     sameSite: true
   },
 }));
+
+// load controllers and models
+const userController = require('./database/controllers/userC');
+const User = require('./database/models/userM');
+const trainingController = require('./database/controllers/trainingC');
+const Training = require('./database/models/trainingM');
+const locationController = require('./database/controllers/locationC');
+const Location = require('./database/models/locationM');
+const bookingController = require('./database/controllers/bookingC');
+const Booking = require('./database/models/bookingM');
+const invoiceController = require('./database/controllers/invoiceC');
+const Invoice = require('./database/models/invoiceM');
 
 // middleware to redirect not authenticated users to login others to next()
 const redirectLogin = (req, res, next) => {
@@ -112,8 +118,14 @@ const birthdateFormatValidation = (req, res, next) => {
 
 // For each navigation link create get routes and send HTML to the Browser
 app.get('/', redirectDashboard, (req, res) => {
-  console.log(req.url);
-  console.log(req.session.id);
+
+  var headers = JSON.stringify(req.headers);
+
+  console.log('all request headers: ' +headers);
+  console.log('req.hostname: ' +req.hostname);
+  console.log('req.ip: ' +req.ip);
+  console.log('req.url: ' +req.url);
+  console.log(req.session);
 
   res.render('index', {
       title: 'User Login Page',
@@ -122,8 +134,14 @@ app.get('/', redirectDashboard, (req, res) => {
 });
 
 app.get('/register', redirectDashboard, (req, res) => {
-  console.log(req.url);
-  console.log(req.session.id);
+
+  var headers = JSON.stringify(req.headers);
+
+  console.log('all request headers: ' +headers);
+  console.log('req.hostname: ' +req.hostname);
+  console.log('req.ip: ' +req.ip);
+  console.log('req.url: ' +req.url);
+  console.log(req.session);
 
   res.render('register', {
       title: 'User Registration Page',
@@ -132,8 +150,13 @@ app.get('/register', redirectDashboard, (req, res) => {
 
 app.get('/dashboard', redirectLogin, async (req, res) => {
 
-  console.log(req.url);
-  console.log(req.session.id);
+  var headers = JSON.stringify(req.headers);
+
+  console.log('all request headers: ' +headers);
+  console.log('req.hostname: ' +req.hostname);
+  console.log('req.ip: ' +req.ip);
+  console.log('req.url: ' +req.url);
+  console.log(req.session);
 
   if (req.session.data.role == 'admin') {
     console.log('This is admin');
