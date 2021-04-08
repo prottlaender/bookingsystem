@@ -85,25 +85,143 @@ const Booking = require('./database/models/bookingM');
 const invoiceController = require('./database/controllers/invoiceC');
 const Invoice = require('./database/models/invoiceM');
 
-// middleware to redirect not authenticated users to login others to next()
+// Redirect GET requests from not authenticated users to login
 const redirectLogin = (req, res, next) => {
   if (!req.session.data) {
     res.redirect('/')
+
   } else {
     next()
+
   }
 }
 
-// middleware to redirect authenticated users to dashboard others to next()
+// Redirect GET requests from authenticated users to dashboard
 const redirectDashboard = (req, res, next) => {
   if (req.session.data) {
     res.redirect('/dashboard')
+
   } else {
     next()
+
   }
 }
 
-// middleware to validate birthdate format
+// Verify POST requests only for anonym users
+const verifyAnonym = (req, res, next) => {
+  if (req.session.data) {
+    var message = 'You are not authorized to perform this request because you are already logged-in !';
+    res.status(400).redirect('/400badRequest?message='+message);
+
+  } else {
+    next()
+
+  }
+}
+
+// Verify POST requests only for anonym and admin users
+const verifyAnonymAndAdmin = (req, res, next) => {
+
+  if (req.session.data) {
+
+    if (req.session.data.role == 'player') {
+
+      var message = 'You are not authorized to perform this request (Player) !';
+      res.status(400).redirect('/400badRequest?message='+message);
+
+    } else if (req.session.data.role == 'coach') {
+
+      var message = 'You are not authorized to perform this request (Coach) !';
+      res.status(400).redirect('/400badRequest?message='+message);
+
+    } else {
+      next()
+
+    }
+
+  } else {
+    next()
+
+  }
+}
+
+// Verify POST requests only for admin and player users
+const verifyAdminAndPlayer = (req, res, next) => {
+  if (!req.session.data) {
+    var message = 'You are not authorized to perform this request !';
+    res.status(400).redirect('/400badRequest?message='+message);
+
+  } else {
+
+    if (req.session.data.role == 'admin') {
+      next()
+
+    } else if (req.session.data.role == 'player') {
+      next()
+
+    } else {
+      var message = 'You are not authorized to perform this request (no Admin and no Player) !';
+      res.status(400).redirect('/400badRequest?message='+message);
+    }
+
+  }
+}
+
+// Verify POST requests only for admin users
+const verifyAdmin = (req, res, next) => {
+  if (!req.session.data) {
+    var message = 'You are not authorized to perform this request !';
+    res.status(400).redirect('/400badRequest?message='+message);
+
+  } else {
+    if (req.session.data.role == 'admin') {
+      next()
+
+    } else {
+      var message = 'You are not authorized to perform this request (no Admin) !';
+      res.status(400).redirect('/400badRequest?message='+message);
+    }
+
+  }
+}
+
+// Verify POST requests only for player users
+const verifyPlayer = (req, res, next) => {
+  if (!req.session.data) {
+    var message = 'You are not authorized to perform this request !';
+    res.status(400).redirect('/400badRequest?message='+message);
+
+  } else {
+    if (req.session.data.role == 'player') {
+      next()
+
+    } else {
+      var message = 'You are not authorized to perform this request (no Player) !';
+      res.status(400).redirect('/400badRequest?message='+message);
+    }
+
+  }
+}
+
+// Verify POST requests only for coach users
+const verifyCoach = (req, res, next) => {
+  if (!req.session.data) {
+    var message = 'You are not authorized to perform this request !';
+    res.status(400).redirect('/400badRequest?message='+message);
+
+  } else {
+    if (req.session.data.role == 'coach') {
+      next()
+
+    } else {
+      var message = 'You are not authorized to perform this request (no Coach) !';
+      res.status(400).redirect('/400badRequest?message='+message);
+    }
+
+  }
+}
+
+// Validate birthdate format
 const birthdateFormatValidation = (req, res, next) => {
   const birthdate = req.body.birthdate;
   const regex = /^\d{4}-(0[1-9]|(1[0-2]))-(0[1-9]|([1-2][0-9])|(3[0-1]))$/;
@@ -116,7 +234,8 @@ const birthdateFormatValidation = (req, res, next) => {
   }
 }
 
-// For each navigation link create get routes and send HTML to the Browser
+// Create the GET routes
+// GET home route only for anonym users. Authenticated users redirected to dashboard
 app.get('/', redirectDashboard, (req, res) => {
 
   var headers = JSON.stringify(req.headers);
@@ -133,6 +252,7 @@ app.get('/', redirectDashboard, (req, res) => {
 
 });
 
+// GET register route only for anonym users. Authenticated users redirected to dashboard
 app.get('/register', redirectDashboard, (req, res) => {
 
   var headers = JSON.stringify(req.headers);
@@ -148,6 +268,7 @@ app.get('/register', redirectDashboard, (req, res) => {
     });
 });
 
+// GET dashboard route only for authenticated users. Anonym users redirected to home
 app.get('/dashboard', redirectLogin, async (req, res) => {
 
   var headers = JSON.stringify(req.headers);
@@ -158,6 +279,7 @@ app.get('/dashboard', redirectLogin, async (req, res) => {
   console.log('req.url: ' +req.url);
   console.log(req.session);
 
+  // Check admin authorization and render admin_dashboard
   if (req.session.data.role == 'admin') {
     console.log('This is admin');
 
@@ -189,6 +311,7 @@ app.get('/dashboard', redirectLogin, async (req, res) => {
 
       });
 
+  // Check player authorization and render player_dashboard
   } else if (req.session.data.role == 'player') {
     console.log('This is player');
 
@@ -219,6 +342,7 @@ app.get('/dashboard', redirectLogin, async (req, res) => {
       data_myinvoices: invoices,
       });
 
+  // Check coach authorization and render coach_dashboard
   } else if (req.session.data.role == 'coach') {
     console.log('This is coach');
 
@@ -237,14 +361,15 @@ app.get('/dashboard', redirectLogin, async (req, res) => {
       });
 
   } else {
-    // if user not authorized as admin end request and send response
+    // if user not authorized as admin, player or coach end request and send response
     var message = 'You are not authorized. Access prohibited';
     res.status(400).redirect('/400badRequest?message='+message);
   }
 
 });
 
-app.get('/logout', (req, res) => {
+// GET logout route only for authenticated users. Anonym users redirected to home
+app.get('/logout', redirectLogin, (req, res) => {
   req.session.destroy(function(err) {
     if (err) {
       res.send('An err occured: ' +err.message);
@@ -255,6 +380,7 @@ app.get('/logout', (req, res) => {
   });
 })
 
+// GET Success route render 200success
 app.get('/200success', (req, res) => {
   console.log(req.url);
   console.log(req.session.id);
@@ -267,6 +393,7 @@ app.get('/200success', (req, res) => {
   })
 })
 
+// GET bad request route render 400badRequest
 app.get('/400badRequest', (req, res) => {
   console.log(req.url);
   console.log(req.session.id);
@@ -279,51 +406,58 @@ app.get('/400badRequest', (req, res) => {
   })
 })
 
-// User Registration and Authentication
-app.post('/createusers', birthdateFormatValidation, userController.createUser)
-app.post('/loginusers', userController.loginUser)
+// Anonym POST Route
+// Login user available for anonym only
+app.post('/loginusers', verifyAnonym, userController.loginUser)
 
+// Shared POST Routes
+// Create Users available for anonym and admin
+app.post('/createusers', verifyAnonymAndAdmin, birthdateFormatValidation, userController.createUser)
+// Update User-Email available for admin and player
+app.post('/updateuseremail', verifyAdminAndPlayer, userController.updateUserEmail)
+// Update User-Password available for admin and player
+app.post('/setnewuserpassword', verifyAdminAndPlayer, userController.setNewUserPassword)
+
+// Dedicated POST Routes
+// Admin POST Routes available for admin only
 // Admin User Management
-app.post('/callupdateusers', userController.callUpdateUsers)
-app.post('/updateuser', birthdateFormatValidation, userController.updateUser)
-app.post('/updateuseremail', userController.updateUserEmail)
-app.post('/terminateusers', userController.terminateUser)
-app.post('/activateusers', userController.activateUser)
-app.post('/removeusers', userController.removeUser)
-app.post('/setnewuserpassword', userController.setNewUserPassword)
-
-// Admin Training Management
-app.post('/callcreatetrainings', trainingController.callCreateTrainings)
-app.post('/createtraining', trainingController.createTraining)
-app.post('/callupdatetrainings', trainingController.callUpdateTrainings)
-app.post('/updatetraining', trainingController.updateTraining)
-
+app.post('/callupdateusers', verifyAdmin, userController.callUpdateUsers)
+app.post('/updateuser', verifyAdmin, birthdateFormatValidation, userController.updateUser)
+app.post('/terminateusers', verifyAdmin, userController.terminateUser)
+app.post('/activateusers', verifyAdmin, userController.activateUser)
+app.post('/removeusers', verifyAdmin, userController.removeUser)
+// Admin Update Training
+app.post('/callupdatetrainings', verifyAdmin, trainingController.callUpdateTrainings)
+app.post('/updatetraining', verifyAdmin, trainingController.updateTraining)
 // Admin Location Management
-app.post('/createlocations', locationController.createLocation)
-app.post('/callupdatelocations', locationController.callUpdateLocations)
-app.post('/updatelocation', locationController.updateLocation)
-
+app.post('/createlocations', verifyAdmin, locationController.createLocation)
+app.post('/callupdatelocations', verifyAdmin, locationController.callUpdateLocations)
+app.post('/updatelocation', verifyAdmin, locationController.updateLocation)
+app.post('/callcreatetrainings', verifyAdmin, trainingController.callCreateTrainings)
+app.post('/createtraining', verifyAdmin, trainingController.createTraining)
 // Admin Invoice Management
-app.post('/createinvoice', invoiceController.createInvoiceUser)
-app.post('/callcancelinvoice', invoiceController.callCancelInvoice)
-app.post('/cancelinvoice', invoiceController.cancelInvoice)
-app.post('/callpayinvoice', invoiceController.callPayInvoice)
-app.post('/payinvoice', invoiceController.payInvoice)
-app.post('/callrepayinvoice', invoiceController.callRePayInvoice)
-app.post('/repayinvoice', invoiceController.rePayInvoice)
+app.post('/createinvoice', verifyAdmin, invoiceController.createInvoiceUser)
+app.post('/callcancelinvoice', verifyAdmin, invoiceController.callCancelInvoice)
+app.post('/cancelinvoice', verifyAdmin, invoiceController.cancelInvoice)
+app.post('/callpayinvoice', verifyAdmin, invoiceController.callPayInvoice)
+app.post('/payinvoice', verifyAdmin, invoiceController.payInvoice)
+app.post('/callrepayinvoice', verifyAdmin, invoiceController.callRePayInvoice)
+app.post('/repayinvoice', verifyAdmin, invoiceController.rePayInvoice)
 
-// Player Booking Management
-app.post('/callbooktrainings', bookingController.callBookTrainings)
-app.post('/booktrainings', bookingController.bookTraining)
-app.post('/bookingreactivate', bookingController.bookingReactivate)
-app.post('/callcancelbookings', bookingController.callCancelBooking)
-app.post('/cancelbookings', bookingController.cancelBooking)
-app.post('/callupdatemyuserdata', userController.callUpdateMyUserData)
-app.post('/updatemyuserdata', birthdateFormatValidation, userController.updateMyUserData)
+// Player POST Routes available for player only
+// Booking Management
+app.post('/callbooktrainings', verifyPlayer, bookingController.callBookTrainings)
+app.post('/booktrainings', verifyPlayer, bookingController.bookTraining)
+app.post('/bookingreactivate', verifyPlayer, bookingController.bookingReactivate)
+app.post('/callcancelbookings', verifyPlayer, bookingController.callCancelBooking)
+app.post('/cancelbookings', verifyPlayer, bookingController.cancelBooking)
+app.post('/callupdatemyuserdata', verifyPlayer, userController.callUpdateMyUserData)
+app.post('/updatemyuserdata', verifyPlayer, birthdateFormatValidation, userController.updateMyUserData)
 
-// Coach Confirmation Management
-app.post('/callparticipants', bookingController.callParticipants)
-app.post('/callconfirmpatricipants', bookingController.callConfirmPatricipants)
+// Coach POST Routes available for coach only
+// Confirmation Management
+app.post('/callparticipants', verifyCoach, bookingController.callParticipants)
+app.post('/callconfirmpatricipants', verifyCoach, bookingController.callConfirmPatricipants)
 
 
 // Browsers will by default try to request /favicon.ico from the
@@ -332,7 +466,7 @@ app.post('/callconfirmpatricipants', bookingController.callConfirmPatricipants)
 // The favicon.ico request will be catched and send a 204 No Content status
 app.get('/favicon.ico', function(req, res) {
     console.log(req.url);
-    res.status(204).json({status: 'no favicon'});
+    res.status(204).json( {status: 'no favicon'} );
 });
 
 // default route error handler. matches all routes and all methods

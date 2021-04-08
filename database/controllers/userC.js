@@ -360,45 +360,56 @@ module.exports = {
 
           // End User is Admin condition
           } else {
-            // if user exist update user email with updateEmail and save user
-            user.email = updateEmail
-            user.save(function(err, up_user) {
-              if (err) {
-              // if validation err occur end request and send response
-              var message = err.message;
+
+            // Check if the the user that is logged in change his own email
+            if (req.session.data.email == inputemail) {
+
+              // if user exist update user email with updateEmail and save user
+              user.email = updateEmail
+              user.save(function(err, up_user) {
+                if (err) {
+                // if validation err occur end request and send response
+                var message = err.message;
+                res.status(400).redirect('/400badRequest?message='+message);
+
+                } else {
+                  // where the user is author and catch err in case update fail
+                  Booking.updateMany({ "_bookuseremail": email }, { "_bookuseremail": updateEmail }, function(err, result) {
+
+                    if (result.n == 0) {
+                      req.session.destroy(function(err) {
+                        if (err) {
+                          res.send('An err occured: ' +err.message);
+
+                        } else {
+                          var message = 'User email update successful. No Bookings Found to update User email on Bookings. Login with your new Email';
+                          //res.status(200).redirect('/200success?message='+message);
+                          res.status(200).clearCookie('booking').redirect('/200success?message='+message);
+                        }
+                      })
+
+                     } else {
+                       req.session.destroy(function(err) {
+                         if (err) {
+                           res.send('An err occured: ' +err.message);
+
+                         } else {
+                           var message = 'User email update successful. User email on Bookings updated. Login with your new Email';
+                           res.status(200).clearCookie('booking').redirect('/200success?message='+message);
+
+                         }
+                       })
+                     }
+                  })
+                }
+              })
+
+            } else {
+
+              var message = 'You are not authorized to perform this request. You can only update your own email !';
               res.status(400).redirect('/400badRequest?message='+message);
 
-              } else {
-                // where the user is author and catch err in case update fail
-                Booking.updateMany({ "_bookuseremail": email }, { "_bookuseremail": updateEmail }, function(err, result) {
-
-                  if (result.n == 0) {
-                    req.session.destroy(function(err) {
-                      if (err) {
-                        res.send('An err occured: ' +err.message);
-
-                      } else {
-                        var message = 'User email update successful. No Bookings Found to update User email on Bookings. Login with your new Email';
-                        //res.status(200).redirect('/200success?message='+message);
-                        res.status(200).clearCookie('booking').redirect('/200success?message='+message);
-                      }
-                    })
-
-                   } else {
-                     req.session.destroy(function(err) {
-                       if (err) {
-                         res.send('An err occured: ' +err.message);
-
-                       } else {
-                         var message = 'User email update successful. User email on Bookings updated. Login with your new Email';
-                         res.status(200).clearCookie('booking').redirect('/200success?message='+message);
-
-                       }
-                     })
-                   }
-                })
-              }
-            })
+            }
           // End User is no admin condition
           }
         // End User exist condition
@@ -599,7 +610,17 @@ module.exports = {
                 var cat = 'adult'
               };
 
-              var userData = { userId: user._id, name: user.name, lastname: user.lastname, email: user.email, role: user.role, status: user._status, age: age, cat: cat }
+              var userData = {
+                userId: user._id,
+                status: user._status,
+                name: user.name,
+                lastname: user.lastname,
+                email: user.email,
+                role: user.role,
+                age: age,
+                cat: cat,
+              }
+
               req.session.data = userData
 
               res.status(200).redirect('/dashboard')
