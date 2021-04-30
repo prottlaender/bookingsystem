@@ -2,12 +2,11 @@
 
 // load the bcryptjs module
 const bcrypt = require('bcryptjs');
+// define hash saltrounds for password hashing
+const saltRounds = 10;
 // load the relevant Prototype Objects (exported from the models)
 const Booking = require('../models/bookingM');
 const User = require('../models/userM');
-
-// define hash saltrounds for password hashing
-const saltRounds = 10;
 
 // export the User Controller Modules
 module.exports = {
@@ -585,53 +584,65 @@ module.exports = {
     const inputemail = req.body.email
     const email = inputemail.toLowerCase()
 
-    User.findOne({ email: email }, async function(error, user) {
-      if (!user) {
-        var message = 'User not found. Login not possible';
-        res.status(400).redirect('/400badRequest?message='+message);
+    console.log(req.url);
+    console.log(req.session.id);
+    console.log(req.session);
 
-      } else {
-        if (user._status !== 'active') {
-          var message = 'Login not possible. Await User to be activated';
+    try {
+
+      User.findOne({ email: email }, async function(error, user) {
+        if (!user) {
+          var message = 'User not found. Login not possible';
           res.status(400).redirect('/400badRequest?message='+message);
 
         } else {
-            if (bcrypt.compareSync(req.body.password, user.password)) {
+          if (user._status !== 'active') {
+            var message = 'Login not possible. Await User to be activated';
+            res.status(400).redirect('/400badRequest?message='+message);
 
-              var yearInMs = 3.15576e+10;
-              var currentDate = new Date ()
-              var currentDateMs = currentDate.getTime()
-              var birthDateMs = user.birthdate.getTime()
-              var age = Math.floor((currentDateMs - birthDateMs) / yearInMs)
+          } else {
+              if (bcrypt.compareSync(req.body.password, user.password)) {
 
-              if (age < 18) {
-                var cat = 'youth'
+                var yearInMs = 3.15576e+10;
+                var currentDate = new Date ()
+                var currentDateMs = currentDate.getTime()
+                var birthDateMs = user.birthdate.getTime()
+                var age = Math.floor((currentDateMs - birthDateMs) / yearInMs)
+
+                if (age < 18) {
+                  var cat = 'youth'
+                } else {
+                  var cat = 'adult'
+                };
+
+                var userData = {
+                  userId: user._id,
+                  status: user._status,
+                  name: user.name,
+                  lastname: user.lastname,
+                  email: user.email,
+                  role: user.role,
+                  age: age,
+                  cat: cat,
+                }
+
+                req.session.data = userData
+
+                res.status(200).redirect('/dashboard')
+
               } else {
-                var cat = 'adult'
-              };
-
-              var userData = {
-                userId: user._id,
-                status: user._status,
-                name: user.name,
-                lastname: user.lastname,
-                email: user.email,
-                role: user.role,
-                age: age,
-                cat: cat,
+                var message = 'Login not possible. Wrong User password';
+                res.status(400).redirect('/400badRequest?message='+message);
               }
-
-              req.session.data = userData
-
-              res.status(200).redirect('/dashboard')
-
-            } else {
-              var message = 'Login not possible. Wrong User password';
-              res.status(400).redirect('/400badRequest?message='+message);
-            }
+          }
         }
-      }
-    })
+      })
+
+    } catch (error) {
+      // if user query fail call default error function
+      next(error)
+
+    }
   // End Module
   },
 

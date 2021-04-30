@@ -1,16 +1,13 @@
 // booking.js
 
-// http module
-const http = require('http');
-// express module
+// Load express module and create app
 const express = require('express');
-// Create the express app
 const app = express();
 // Trust the first Proxy
 app.set('trust proxy', 1);
-// HTTP header security module
+// Load HTTP response header security module
 const helmet = require('helmet');
-// use secure HTTP headers using helmet
+// use secure HTTP headers using helmet with every request
 app.use(
   helmet({
       frameguard: {
@@ -21,45 +18,35 @@ app.use(
     },
     })
   );
-
-// use express.static and locate static files in /static folder in the root of the app
-app.use(express.static('./static'));
-// use express.urlencoded to parse incomming requests with urlencoded payloads
-app.use(express.urlencoded({ extended: true }));
-// Set Pug Template Engine
-app.set('view engine', 'pug')
-app.set('views', './views')
-
-// envy module to manage environment variables
+// Load envy module to manage environment variables
 const envy = require('envy');
-// set the environment variables
-const env = envy()
+const env = envy();
+
+// Set environment variables
 const port = env.port
 const host = env.host
 const mongodbpath = env.mongodbpath
 const sessionsecret = env.sessionsecret
 const sessioncookiename = env.sessioncookiename
+const sessioncookiecollection = env.sessioncookiecollection
 
-// server side session and cookie module
+// Load server side session and cookie module
 const session = require('express-session');
-// mongodb session storage module
+// Load mongodb session storage module
 const connectMdbSession = require('connect-mongodb-session');
-// load StartMongoServer function from db configuration file
-const StartMongoServer = require('./database/db');
-// start MongoDB server
-StartMongoServer();
-// Create MongoDB session storage object
+// Create MongoDB session store object
 const MongoDBStore = connectMdbSession(session)
-// create new session store in mongodb
+// Create new session store in mongodb
 const store = new MongoDBStore({
   uri: mongodbpath,
-  collection: 'col_sessions'
+  //collection: 'col_sessions'
+  collection: sessioncookiecollection
 });
-// catch errors in case store creation fails
+// Catch errors in case session store creation fails
 store.on('error', function(error) {
   console.log(`error store session in session store: ${error.message}`);
 });
-// use session to create session and session cookie
+// Use session to create session and session cookie
 app.use(session({
   secret: sessionsecret,
   name: sessioncookiename,
@@ -73,7 +60,12 @@ app.use(session({
   },
 }));
 
-// load controllers and models
+// load StartMongoServer function from db configuration file
+const StartMongoServer = require('./database/db');
+// start MongoDB server
+StartMongoServer();
+
+// Load db controllers and db models
 const userController = require('./database/controllers/userC');
 const User = require('./database/models/userM');
 const trainingController = require('./database/controllers/trainingC');
@@ -85,6 +77,15 @@ const Booking = require('./database/models/bookingM');
 const invoiceController = require('./database/controllers/invoiceC');
 const Invoice = require('./database/models/invoiceM');
 
+// Use express.static and locate static files in /static folder in the root of the app
+app.use(express.static('./static'));
+// Use express.urlencoded to parse incomming requests with urlencoded payloads
+app.use(express.urlencoded( { extended: true } ));
+// Set Pug Template Engine
+app.set('view engine', 'pug')
+app.set('views', './views')
+
+// Authorizations
 // Redirect GET requests from not authenticated users to login
 const redirectLogin = (req, res, next) => {
   if (!req.session.data) {
@@ -107,52 +108,40 @@ const redirectDashboard = (req, res, next) => {
   }
 }
 
-// Verify POST requests only for anonym users
+// Authorize requests only for not authenticated users
 const verifyAnonym = (req, res, next) => {
-  if (req.session.data) {
-    var message = 'You are not authorized to perform this request because you are already logged-in !';
-    res.status(400).redirect('/400badRequest?message='+message);
+  if (!req.session.data) {
+    next()
 
   } else {
-    next()
+    var message = 'You are already logged-in. You are not authorized to perform this request !';
+    res.status(400).redirect('/400badRequest?message='+message);
 
   }
 }
 
-// Verify POST requests only for anonym and admin users
+// Authorize requests only for anonym and admin users
 const verifyAnonymAndAdmin = (req, res, next) => {
+  if (!req.session.data) {
+    next()
 
-  if (req.session.data) {
+  } else {
 
-    if (req.session.data.role == 'player') {
-
-      var message = 'You are not authorized to perform this request (Player) !';
-      res.status(400).redirect('/400badRequest?message='+message);
-
-    } else if (req.session.data.role == 'coach') {
-
-      var message = 'You are not authorized to perform this request (Coach) !';
-      res.status(400).redirect('/400badRequest?message='+message);
+    if (req.session.data.role == 'admin') {
+      next()
 
     } else {
-      next()
+      var message = 'You are no Admin. You are not authorized to perform this request !';
+      res.status(400).redirect('/400badRequest?message='+message);
 
     }
 
-  } else {
-    next()
-
   }
 }
 
-// Verify POST requests only for admin and player users
+// Authorize requests only for admin and player users
 const verifyAdminAndPlayer = (req, res, next) => {
-  if (!req.session.data) {
-    var message = 'You are not authorized to perform this request !';
-    res.status(400).redirect('/400badRequest?message='+message);
-
-  } else {
-
+  if (req.session.data) {
     if (req.session.data.role == 'admin') {
       next()
 
@@ -160,67 +149,73 @@ const verifyAdminAndPlayer = (req, res, next) => {
       next()
 
     } else {
-      var message = 'You are not authorized to perform this request (no Admin and no Player) !';
+      var message = 'You are no Admin, no Player. You are not authorized to perform this request !';
       res.status(400).redirect('/400badRequest?message='+message);
     }
 
+  } else {
+    var message = 'You are not logged-in. You are not authorized to perform this request !';
+    res.status(400).redirect('/400badRequest?message='+message);
   }
+
 }
 
-// Verify POST requests only for admin users
+// Authorize requests only for admin users
 const verifyAdmin = (req, res, next) => {
-  if (!req.session.data) {
-    var message = 'You are not authorized to perform this request !';
-    res.status(400).redirect('/400badRequest?message='+message);
-
-  } else {
+  if (req.session.data) {
     if (req.session.data.role == 'admin') {
       next()
 
     } else {
-      var message = 'You are not authorized to perform this request (no Admin) !';
+      var message = 'You are no Admin. You are not authorized to perform this request !';
       res.status(400).redirect('/400badRequest?message='+message);
     }
+
+  } else {
+    var message = 'You are not logged-in. You are not authorized to perform this request !';
+    res.status(400).redirect('/400badRequest?message='+message);
 
   }
 }
 
-// Verify POST requests only for player users
+// Authorize requests only for player users
 const verifyPlayer = (req, res, next) => {
-  if (!req.session.data) {
-    var message = 'You are not authorized to perform this request !';
-    res.status(400).redirect('/400badRequest?message='+message);
-
-  } else {
+  if (req.session.data) {
     if (req.session.data.role == 'player') {
       next()
 
     } else {
-      var message = 'You are not authorized to perform this request (no Player) !';
+      var message = 'You are no Player. You are not authorized to perform this request !';
       res.status(400).redirect('/400badRequest?message='+message);
     }
+
+  } else {
+    var message = 'You are not logged-in. You are not authorized to perform this request !';
+    res.status(400).redirect('/400badRequest?message='+message);
 
   }
 }
 
-// Verify POST requests only for coach users
+// Authorize requests only for coach users
 const verifyCoach = (req, res, next) => {
-  if (!req.session.data) {
-    var message = 'You are not authorized to perform this request !';
-    res.status(400).redirect('/400badRequest?message='+message);
-
-  } else {
+  if (req.session.data) {
     if (req.session.data.role == 'coach') {
       next()
 
     } else {
-      var message = 'You are not authorized to perform this request (no Coach) !';
+      var message = 'You are no Coach. You are not authorized to perform this request !';
       res.status(400).redirect('/400badRequest?message='+message);
+
     }
+
+  } else {
+    var message = 'You are not logged-in. You are not authorized to perform this request !';
+    res.status(400).redirect('/400badRequest?message='+message);
 
   }
 }
 
+// Validations
 // Validate birthdate format
 const birthdateFormatValidation = (req, res, next) => {
   const birthdate = req.body.birthdate;
@@ -234,16 +229,11 @@ const birthdateFormatValidation = (req, res, next) => {
   }
 }
 
-// Create the GET routes
+// Get endpoints
 // GET home route only for anonym users. Authenticated users redirected to dashboard
 app.get('/', redirectDashboard, (req, res) => {
-
-  var headers = JSON.stringify(req.headers);
-
-  console.log('all request headers: ' +headers);
-  console.log('req.hostname: ' +req.hostname);
-  console.log('req.ip: ' +req.ip);
-  console.log('req.url: ' +req.url);
+  console.log(req.url);
+  console.log(req.session.id);
   console.log(req.session);
 
   res.render('index', {
@@ -254,13 +244,8 @@ app.get('/', redirectDashboard, (req, res) => {
 
 // GET register route only for anonym users. Authenticated users redirected to dashboard
 app.get('/register', redirectDashboard, (req, res) => {
-
-  var headers = JSON.stringify(req.headers);
-
-  console.log('all request headers: ' +headers);
-  console.log('req.hostname: ' +req.hostname);
-  console.log('req.ip: ' +req.ip);
-  console.log('req.url: ' +req.url);
+  console.log(req.url);
+  console.log(req.session.id);
   console.log(req.session);
 
   res.render('register', {
@@ -270,13 +255,8 @@ app.get('/register', redirectDashboard, (req, res) => {
 
 // GET dashboard route only for authenticated users. Anonym users redirected to home
 app.get('/dashboard', redirectLogin, async (req, res) => {
-
-  var headers = JSON.stringify(req.headers);
-
-  console.log('all request headers: ' +headers);
-  console.log('req.hostname: ' +req.hostname);
-  console.log('req.ip: ' +req.ip);
-  console.log('req.url: ' +req.url);
+  console.log(req.url);
+  console.log(req.session.id);
   console.log(req.session);
 
   // Check admin authorization and render admin_dashboard
@@ -380,10 +360,21 @@ app.get('/logout', redirectLogin, (req, res) => {
   });
 })
 
+// GET favicon default
+// Browsers will by default try to request /favicon.ico from the
+// root of a hostname, in order to show an icon in the browser tab.
+// To avoid that requests returning a 404 (Not Found)
+// The favicon.ico request will be catched and send a 204 No Content status
+app.get('/favicon.ico', function(req, res) {
+    console.log(req.url);
+    res.status(204).json( { status: 'no favicon' } );
+});
+
 // GET Success route render 200success
 app.get('/200success', (req, res) => {
   console.log(req.url);
   console.log(req.session.id);
+  console.log(req.session);
 
   res.status(200).render('200success', {
     title: 'Success',
@@ -393,10 +384,11 @@ app.get('/200success', (req, res) => {
   })
 })
 
-// GET bad request route render 400badRequest
+// GET Bad Request route render 400badRequest
 app.get('/400badRequest', (req, res) => {
   console.log(req.url);
   console.log(req.session.id);
+  console.log(req.session);
 
   res.status(400).render('400badRequest', {
     title: 'Bad Request',
@@ -406,11 +398,12 @@ app.get('/400badRequest', (req, res) => {
   })
 })
 
-// Anonym POST Route
+// POST endpoints
+// Anonym POST endpoint
 // Login user available for anonym only
 app.post('/loginusers', verifyAnonym, userController.loginUser)
 
-// Shared POST Routes
+// Shared POST endpoints
 // Create Users available for anonym and admin
 app.post('/createusers', verifyAnonymAndAdmin, birthdateFormatValidation, userController.createUser)
 // Update User-Email available for admin and player
@@ -418,8 +411,7 @@ app.post('/updateuseremail', verifyAdminAndPlayer, userController.updateUserEmai
 // Update User-Password available for admin and player
 app.post('/setnewuserpassword', verifyAdminAndPlayer, userController.setNewUserPassword)
 
-// Dedicated POST Routes
-// Admin POST Routes available for admin only
+// Admin POST endpoints
 // Admin User Management
 app.post('/callupdateusers', verifyAdmin, userController.callUpdateUsers)
 app.post('/updateuser', verifyAdmin, birthdateFormatValidation, userController.updateUser)
@@ -444,33 +436,24 @@ app.post('/payinvoice', verifyAdmin, invoiceController.payInvoice)
 app.post('/callrepayinvoice', verifyAdmin, invoiceController.callRePayInvoice)
 app.post('/repayinvoice', verifyAdmin, invoiceController.rePayInvoice)
 
-// Player POST Routes available for player only
-// Booking Management
+// Player POST endpoints
+// Player Booking Management
 app.post('/callbooktrainings', verifyPlayer, bookingController.callBookTrainings)
 app.post('/booktrainings', verifyPlayer, bookingController.bookTraining)
 app.post('/bookingreactivate', verifyPlayer, bookingController.bookingReactivate)
 app.post('/callcancelbookings', verifyPlayer, bookingController.callCancelBooking)
 app.post('/cancelbookings', verifyPlayer, bookingController.cancelBooking)
+// Player User Management
 app.post('/callupdatemyuserdata', verifyPlayer, userController.callUpdateMyUserData)
 app.post('/updatemyuserdata', verifyPlayer, birthdateFormatValidation, userController.updateMyUserData)
 
-// Coach POST Routes available for coach only
-// Confirmation Management
+// Coach POST endpoints
+// Coach Confirmation Management
 app.post('/callparticipants', verifyCoach, bookingController.callParticipants)
 app.post('/callconfirmpatricipants', verifyCoach, bookingController.callConfirmPatricipants)
 
-
-// Browsers will by default try to request /favicon.ico from the
-// root of a hostname, in order to show an icon in the browser tab.
-// To avoid that requests returning a 404 (Not Found)
-// The favicon.ico request will be catched and send a 204 No Content status
-app.get('/favicon.ico', function(req, res) {
-    console.log(req.url);
-    res.status(204).json( {status: 'no favicon'} );
-});
-
-// default route error handler. matches all routes and all methods
-app.use((req, res, next) => {
+// Default route error handler. matches all routes and all methods when no route found.
+app.use( (req, res, next) => {
  res.status(404).send({
  code: 404,
  status: 'Not found',
@@ -478,7 +461,7 @@ app.use((req, res, next) => {
  })
 })
 
-// default server error handler
+// Default server error handler
 app.use( (error, req, res, next) => {
  res.status(500).send({
    code: 500,
@@ -487,10 +470,8 @@ app.use( (error, req, res, next) => {
  });
 })
 
-// create server
-const server = http.createServer(app)
+// Start the app
+app.listen(port)
 
-// connect server to port
-server.listen(port)
-
+// Default log
 console.log(`express bookingsystem server start successful on host ${host} on port ${port}`)
