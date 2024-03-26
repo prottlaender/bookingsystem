@@ -12,7 +12,7 @@
     "bcryptjs": "2.4.3",
     "connect-mongodb-session": "2.3.3",
     "envy": "2.0.0",
-    "express": "4.17.1",
+    "express": "4.19.2",
     "express-session": "1.17.1",
     "helmet": "3.23.3",
     "mongoose": "^5.12.3",
